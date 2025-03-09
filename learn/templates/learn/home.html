@@ -1,73 +1,762 @@
-
-{% extends "base/base.html" %}
-{% block content %} 
-  <!-- Main content of the second page -->
-  <main class="pt-20 mx-auto p-4">
+{% extends "base/base.html" %}        
+{% block content %}
+  <!-- Main content of the learning platform -->
+  <main class="pt-12 mx-auto p-6 max-w-7xl">
     <div class="text-center">
-      <h1 class="text-3xl font-semibold">Enter Your Interest</h1>
-      <p class="mt-4">Search for courses and enhance your skills based on your interests.</p>
-      
-      <input id="interestInput" type="text" class="mt-4 p-2 border border-gray-300 rounded-md" placeholder="Enter your interest">
-      <button onclick="searchVideos()" class="mt-4 bg-blue-500 text-white p-2 rounded-md">Search</button>
+      <h1 id="mainTitle" class="text-3xl font-bold text-gray-800">Code Learning Platform</h1>
+      <p id="subTitle" class="mt-4 text-lg text-gray-600">
+        Search for programming tutorials and practice coding in real-time.
+      </p>
+    </div>
 
-      <!-- Video Results Section -->
-      <div id="videoList" class="video-container mt-8 max-h-[80vh] overflow-auto grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-        <!-- Video results will be populated here -->
+    <!-- Search Section -->
+    <div id="searchSection" class="mb-8 text-center">
+      <h2 class="text-2xl font-semibold text-gray-900">Find Tutorials</h2>
+      <div class="flex justify-center mt-4">
+        <input
+          type="text"
+          id="interestInput"
+          class="p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 w-1/2"
+          placeholder="Search programming tutorials..."
+        />
+        <button
+          onclick="searchVideos()"
+          class="ml-4 bg-blue-600 text-white p-3 rounded-lg hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 transition"
+        >
+          <i class="fas fa-search mr-2"></i> Search
+        </button>
       </div>
+    </div>
+
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mt-8">
+      <!-- Left side: Video selection -->
+      <div id="videoList" class="video-container bg-white p-4 rounded-lg shadow-md">
+        <!-- Video results will be populated here -->
+        <div class="text-center text-gray-500 py-8">
+          <i class="fas fa-video text-4xl mb-2"></i>
+          <p>Search for tutorials to begin learning</p>
+        </div>
+      </div>
+      
+    <!-- Right side: Compiler Section -->
+    <div id="compilerSection" class="bg-gray-800 p-6 rounded-lg shadow-md text-white">
+      <div class="flex justify-between items-center mb-4">
+        <h2 class="text-2xl font-semibold">
+          <i class="fas fa-code mr-2"></i> Code Compiler
+        </h2>
+        <div class="flex space-x-2">
+          <select
+            id="themeSelect"
+            class="bg-gray-700 text-white px-3 py-2 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+          >
+            <option value="dark">Dark Theme</option>
+            <option value="light">Light Theme</option>
+          </select>
+          <button id="runButton" class="bg-green-500 text-white px-4 py-2 rounded-lg hover:bg-green-600 focus:outline-none focus:ring-2 focus:ring-green-500 transition">
+            <i class="fas fa-play mr-2"></i> Run
+          </button>
+          <button id="clearButton" class="bg-red-500 text-white px-4 py-2 rounded-lg hover:bg-red-600 focus:outline-none focus:ring-2 focus:ring-red-500 transition">
+            <i class="fas fa-trash-alt mr-2"></i> Clear
+          </button>
+        </div>
+      </div>
+      
+      <form id="codeForm" method="POST" action="{% url 'run-code' %}" class="mt-4">
+        {% csrf_token %}
+        <div class="flex">
+          <select
+            name="language"
+            class="bg-gray-700 text-white px-3 py-2 rounded-l-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+          >
+            <option value="python">Python</option>
+            <option value="javascript">JavaScript</option>
+            <option value="java">Java</option>
+            <option value="cpp">C++</option>
+            <option value="c">C</option>
+          </select>
+          <div class="flex-1 flex items-center justify-end space-x-4 bg-gray-700 px-3 rounded-r-lg text-sm">
+            <span id="lineCount">Lines: 1</span>
+            <span id="charCount">Chars: 0</span>
+          </div>
+        </div>
+        
+        <div class="mt-2 border border-gray-700 rounded-lg overflow-hidden">
+          <div class="flex">
+            <div id="lineNumbers" class="bg-gray-700 text-gray-400 p-2 text-right select-none font-mono">1<br></div>
+            <textarea
+              id="codeEditor"
+              name="code"
+              class="w-full p-2 bg-gray-900 text-green-400 outline-none resize-none font-mono"
+              placeholder="Write your code here..."
+              rows="10"
+            ></textarea>
+          </div>
+        </div>
+      </form>
+      
+      <!-- Output section -->
+      <div id="outputSection" class="mt-6 bg-gray-700 p-4 rounded-lg">
+        <div class="flex justify-between items-center mb-2">
+          <h3 class="font-medium">Output</h3>
+          <button id="copyOutputBtn" class="text-sm bg-gray-600 text-white px-2 py-1 rounded hover:bg-gray-500 transition">
+            <i class="fas fa-copy mr-1"></i> Copy
+          </button>
+        </div>
+        <pre id="outputDisplay" class="bg-gray-900 p-3 rounded text-white font-mono text-sm overflow-auto max-h-40">// Code output will appear here</pre>
+      </div>
+    </div>
+  </div>
+
+    <!-- Notes Section with Tabs -->
+    <div class="mt-12 bg-white shadow-lg rounded-lg overflow-hidden">
+      <div class="flex border-b">
+        <button onclick="switchTab('notes')" id="notesTab" class="py-4 px-6 bg-blue-500 text-white font-medium focus:outline-none">
+          <i class="fas fa-sticky-note mr-2"></i> Notes
+        </button>
+        <button onclick="switchTab('doubts')" id="doubtsTab" class="py-4 px-6 bg-gray-200 text-gray-700 font-medium focus:outline-none">
+          <i class="fas fa-question-circle mr-2"></i> Ask Doubts
+        </button>
+      </div>
+      
+      <!-- Notes Content -->
+      <div id="notesContent" class="p-6">
+        <div class="flex justify-between items-center mb-6">
+          <h2 class="text-2xl font-bold text-gray-800">
+            <i class="fas fa-edit mr-2"></i> My Notes
+          </h2>
+          <div class="flex space-x-2">
+            <button id="saveNoteBtn" class="bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500 transition">
+              <i class="fas fa-save mr-2"></i> Save
+            </button>
+            <button id="newNoteBtn" class="bg-green-500 text-white px-4 py-2 rounded-lg hover:bg-green-600 focus:outline-none focus:ring-2 focus:ring-green-500 transition">
+              <i class="fas fa-plus mr-2"></i> New Note
+            </button>
+          </div>
+        </div>
+
+        <div class="grid grid-cols-1 lg:grid-cols-4 gap-6">
+          <!-- Note List Sidebar -->
+          <div class="bg-gray-100 p-4 rounded-lg h-96 overflow-auto">
+            <div class="flex justify-between items-center mb-4">
+              <h3 class="font-medium text-gray-700">Saved Notes</h3>
+              <span class="text-xs bg-blue-500 text-white px-2 py-1 rounded-full" id="noteCount">0</span>
+            </div>
+            <ul id="notesList" class="space-y-2">
+              <!-- Notes list will be populated here -->
+              <li class="text-gray-400 text-center py-4">No notes yet</li>
+            </ul>
+          </div>
+          
+          <!-- Note Editor -->
+          <div class="lg:col-span-3">
+            <form method="POST" action="{% url 'note-create' %}" id="noteForm" class="space-y-4">
+              {% csrf_token %}
+              
+              <input
+                type="text"
+                name="title"
+                id="id_title"
+                class="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 shadow-sm font-medium"
+                placeholder="Note Title"
+                required
+              />
+              
+              <div class="border border-gray-300 rounded-lg shadow-sm">
+                <div class="bg-gray-100 border-b border-gray-300 p-2 flex space-x-2">
+                  <button type="button" class="p-1 hover:bg-gray-200 rounded" onclick="formatText('bold')">
+                    <i class="fas fa-bold"></i>
+                  </button>
+                  <button type="button" class="p-1 hover:bg-gray-200 rounded" onclick="formatText('italic')">
+                    <i class="fas fa-italic"></i>
+                  </button>
+                  <button type="button" class="p-1 hover:bg-gray-200 rounded" onclick="formatText('underline')">
+                    <i class="fas fa-underline"></i>
+                  </button>
+                  <div class="border-r border-gray-300 h-6 mx-1"></div>
+                  <button type="button" class="p-1 hover:bg-gray-200 rounded" onclick="formatText('h1')">
+                    <i class="fas fa-heading"></i>
+                  </button>
+                  <button type="button" class="p-1 hover:bg-gray-200 rounded" onclick="formatText('list')">
+                    <i class="fas fa-list-ul"></i>
+                  </button>
+                  <button type="button" class="p-1 hover:bg-gray-200 rounded" onclick="formatText('code')">
+                    <i class="fas fa-code"></i>
+                  </button>
+                </div>
+                
+                <textarea
+                  name="content"
+                  id="id_content"
+                  class="w-full p-4 focus:outline-none focus:ring-0 min-h-[300px] font-mono"
+                  placeholder="Write your notes here..."
+                  required
+                ></textarea>
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+      
+      <!-- Doubts Content -->
+      <div id="doubtsContent" class="p-6 hidden">
+        <div class="flex justify-between items-center mb-6">
+          <h2 class="text-2xl font-bold text-gray-800">
+            <i class="fas fa-question-circle mr-2"></i> Ask Your Doubts
+          </h2>
+        </div>
+        
+        <form method="POST" action="{% url 'doubt-create' %}" class="space-y-6">
+          {% csrf_token %}
+          
+          <div>
+            <label for="id_doubt_title" class="block text-sm font-medium text-gray-700 mb-1">Question Title</label>
+            <input
+              type="text"
+              name="title"
+              id="id_doubt_title"
+              class="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 shadow-sm"
+              placeholder="What's your question about?"
+              required
+            />
+          </div>
+          
+          <div>
+            <label for="id_doubt_content" class="block text-sm font-medium text-gray-700 mb-1">Question Details</label>
+            <textarea
+              name="content"
+              id="id_doubt_content"
+              class="w-full p-4 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 shadow-sm min-h-[200px]"
+              placeholder="Describe your doubt in detail. Include any code snippets or errors you're facing."
+              required
+            ></textarea>
+          </div>
+          
+          <div>
+            <label for="id_doubt_tags" class="block text-sm font-medium text-gray-700 mb-1">Tags</label>
+            <input
+              type="text"
+              name="tags"
+              id="id_doubt_tags"
+              class="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 shadow-sm"
+              placeholder="Add tags separated by commas (e.g., python, loops, syntax)"
+            />
+          </div>
+          
+          <div class="flex justify-end">
+            <button
+              type="submit"
+              class="bg-blue-500 text-white px-6 py-3 rounded-lg hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500 transition"
+            >
+              <i class="fas fa-paper-plane mr-2"></i> Submit Question
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+  
+    <!-- Floating Action Buttons -->
+    <div class="fixed bottom-10 right-10 flex flex-col space-y-4">
+      <button
+        id="floatingNoteBtn"
+        onclick="quickNote()"
+        class="bg-blue-500 text-white p-4 rounded-full shadow-lg hover:bg-blue-600 transition focus:outline-none"
+        title="Quick Note"
+      >
+        <i class="fas fa-edit"></i>
+      </button>
+      
+      <button
+        id="floatingDoubtBtn"
+        onclick="location.href='{% url 'doubt-create' %}'"
+        class="bg-red-500 text-white p-4 rounded-full shadow-lg hover:bg-red-600 transition focus:outline-none"
+        title="Ask a Doubt"
+      >
+        <i class="fas fa-question"></i>
+      </button>
     </div>
   </main>
 
   <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.21.1/axios.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/js/all.min.js"></script>
   <script>
-    const apiKey = 'AIzaSyD5DcV6sI-s9NCEKdQjVF2a19lG4696L1U'; // Replace with a valid YouTube API key
+    const apiKey = "AIzaSyDZMYXZLT4su7mzzPG9B-vflruHJaJFF5A"; // Replace with a valid YouTube API key
+    let selectedVideo = null; // Variable to store the selected video
+    let notes = []; // Array to store notes
+    let currentNoteId = null;
 
+    // Initialize when DOM is loaded
+    document.addEventListener('DOMContentLoaded', function() {
+      // Set up code editor
+      setupCodeEditor();
+      
+      // Set up run and clear buttons
+      document.getElementById('runButton').addEventListener('click', function(e) {
+        e.preventDefault();
+        document.getElementById('codeForm').submit();
+      });
+      
+      document.getElementById('clearButton').addEventListener('click', function() {
+        document.getElementById('codeEditor').value = '';
+        updateLineNumbers();
+        countStats();
+      });
+      
+      // Set up notes buttons
+      document.getElementById('saveNoteBtn').addEventListener('click', function(e) {
+        e.preventDefault();
+        saveNote();
+      });
+      
+      document.getElementById('newNoteBtn').addEventListener('click', function() {
+        newNote();
+      });
+      
+      // Load stored notes and selected video
+      loadNotes();
+      loadSelectedVideo();
+    });
+
+    // Function to search videos
     function searchVideos() {
-      const query = document.getElementById('interestInput').value;
+      const query = document.getElementById("interestInput").value;
       if (!query) {
         alert("Please enter a search query.");
         return;
       }
-      const url = `https://www.googleapis.com/youtube/v3/search?part=snippet&q=${query}&key=${apiKey}&type=video&maxResults=12`;
-      console.log('Request URL:', url);  // Log the URL to the console
+      
+      // Show loading state
+      document.getElementById("videoList").innerHTML = `
+        <div class="text-center py-8">
+          <div class="animate-spin rounded-full h-16 w-16 border-t-2 border-b-2 border-blue-500 mx-auto"></div>
+          <p class="mt-4 text-gray-600">Searching for tutorials...</p>
+        </div>
+      `;
+      
+      const url = `https://www.googleapis.com/youtube/v3/search?part=snippet&q=${encodeURIComponent(query)}+programming+tutorial&key=${apiKey}&type=video&maxResults=10`;
 
-      axios.get(url)
-        .then(response => {
-          console.log('API Response:', response);  // Log the API response
+      axios
+        .get(url)
+        .then((response) => {
           const videos = response.data.items;
           if (videos.length === 0) {
-            alert("No videos found. Try a different search.");
+            document.getElementById("videoList").innerHTML = `
+              <div class="text-center py-8 text-gray-600">
+                <i class="fas fa-search-minus text-4xl mb-2"></i>
+                <p>No videos found. Try a different search.</p>
+              </div>
+            `;
           } else {
-            displayVideos(videos);
+            // Extract the topic name from the search query
+            const topicName = query.split(' ').map(word => word.charAt(0).toUpperCase() + word.slice(1)).join(' ');
+
+            // Update the title and subtitle
+            document.getElementById("mainTitle").innerText = `Learning ${topicName} Programming`;
+            document.getElementById("subTitle").innerText = `Follow along with tutorials and practice in the code compiler.`;
+
+            // Display all video options
+            displayVideoOptions(videos);
           }
         })
-        .catch(error => {
-          console.error('Error fetching videos:', error);
+        .catch((error) => {
+          console.error("Error fetching videos:", error);
+          document.getElementById("videoList").innerHTML = `
+            <div class="text-center py-8 text-red-600">
+              <i class="fas fa-exclamation-circle text-4xl mb-2"></i>
+              <p>Error fetching videos. Please try again later.</p>
+            </div>
+          `;
         });
     }
 
-    function displayVideos(videos) {
-      const videoList = document.getElementById('videoList');
-      videoList.innerHTML = ''; // Clear previous search results
+    // Function to display all video options
+    function displayVideoOptions(videos) {
+      const videoListSection = document.getElementById("videoList");
+      videoListSection.innerHTML = '<h3 class="font-medium text-gray-800 mb-4">Search Results</h3>'; 
 
-      videos.forEach(video => {
-        const videoElement = document.createElement('div');
-        videoElement.classList.add('bg-white', 'p-4', 'rounded-lg', 'shadow-md', 'text-center');
+      videos.forEach((video) => {
+        const videoElement = document.createElement("div");
+        videoElement.classList.add(
+          "mb-4",
+          "p-3",
+          "rounded-lg",
+          "border",
+          "border-gray-200",
+          "hover:bg-gray-50",
+          "cursor-pointer"
+        );
+        videoElement.onclick = () => selectVideo(video);
 
-        const videoIframe = document.createElement('iframe');
-        videoIframe.src = `https://www.youtube.com/embed/${video.id.videoId}`;
-        videoIframe.frameBorder = '0';
-        videoIframe.allow = 'accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture';
-        videoIframe.allowFullscreen = true;
+        const videoThumb = document.createElement("img");
+        videoThumb.src = video.snippet.thumbnails.medium.url;
+        videoThumb.classList.add("w-full", "h-auto", "rounded-lg", "mb-2");
+        videoThumb.alt = video.snippet.title;
 
-        const videoTitle = document.createElement('p');
+        const videoTitle = document.createElement("p");
         videoTitle.innerText = video.snippet.title;
+        videoTitle.classList.add("font-medium", "text-gray-800", "text-sm");
 
-        videoElement.appendChild(videoIframe);
+        const channelName = document.createElement("p");
+        channelName.innerText = video.snippet.channelTitle;
+        channelName.classList.add("text-xs", "text-gray-500", "mt-1");
+
+        videoElement.appendChild(videoThumb);
         videoElement.appendChild(videoTitle);
+        videoElement.appendChild(channelName);
 
-        videoList.appendChild(videoElement);
+        videoListSection.appendChild(videoElement);
       });
     }
-  </script>
 
-{% endblock content %}
+    // Function to select a video
+    function selectVideo(video) {
+      selectedVideo = video;
+      localStorage.setItem("selectedVideo", JSON.stringify(selectedVideo));
+
+      const videoListSection = document.getElementById("videoList");
+      videoListSection.innerHTML = ""; 
+
+      const selectedVideoElement = document.createElement("div");
+      selectedVideoElement.classList.add(
+        "bg-white",
+        "rounded-lg",
+        "text-center"
+      );
+
+      // Video iframe
+      const videoIframe = document.createElement("iframe");
+      videoIframe.src = `https://www.youtube.com/embed/${video.id.videoId}?autoplay=1`;
+      videoIframe.frameBorder = "0";
+      videoIframe.allow =
+        "accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture";
+      videoIframe.allowFullscreen = true;
+      videoIframe.classList.add("w-full", "rounded-t-lg");
+      videoIframe.style.height = "275px";
+
+      const videoInfo = document.createElement("div");
+      videoInfo.classList.add("p-3", "border-t", "border-gray-200");
+      
+      const videoTitle = document.createElement("h3");
+      videoTitle.innerText = video.snippet.title;
+      videoTitle.classList.add("font-medium", "text-gray-800", "text-left");
+      
+      const channelName = document.createElement("p");
+      channelName.innerText = `By ${video.snippet.channelTitle}`;
+      channelName.classList.add("text-sm", "text-gray-500", "mt-1", "text-left");
+      
+      const takeNoteBtn = document.createElement("button");
+      takeNoteBtn.innerHTML = '<i class="fas fa-edit mr-2"></i> Take Notes';
+      takeNoteBtn.classList.add("mt-3", "bg-blue-500", "text-white", "px-4", "py-2", "rounded-lg", "text-sm");
+      takeNoteBtn.onclick = () => {
+        document.getElementById('notesTab').click();
+        newNote(`Notes on ${video.snippet.title}`);
+      };
+
+      videoInfo.appendChild(videoTitle);
+      videoInfo.appendChild(channelName);
+      videoInfo.appendChild(takeNoteBtn);
+
+      selectedVideoElement.appendChild(videoIframe);
+      selectedVideoElement.appendChild(videoInfo);
+
+      videoListSection.appendChild(selectedVideoElement);
+    }
+
+    // Function to load selected video from localStorage
+    function loadSelectedVideo() {
+      const storedVideo = localStorage.getItem("selectedVideo");
+      if (storedVideo) {
+        selectedVideo = JSON.parse(storedVideo);
+        selectVideo(selectedVideo);
+      }
+    }
+
+    // Function to set up code editor
+    function setupCodeEditor() {
+      const codeEditor = document.getElementById('codeEditor');
+      
+      // Update line numbers when text changes
+      codeEditor.addEventListener('input', function() {
+        updateLineNumbers();
+        countStats();
+      });
+      
+      // Handle tab key
+      codeEditor.addEventListener('keydown', function(e) {
+        if (e.key === 'Tab') {
+          e.preventDefault();
+          const start = this.selectionStart;
+          const end = this.selectionEnd;
+          
+          this.value = this.value.substring(0, start) + '    ' + this.value.substring(end);
+          this.selectionStart = this.selectionEnd = start + 4;
+          
+          updateLineNumbers();
+          countStats();
+        }
+      });
+      
+      // Initialize line numbers
+      updateLineNumbers();
+    }
+
+    // Function to update line numbers
+    function updateLineNumbers() {
+      const codeEditor = document.getElementById('codeEditor');
+      const lineNumbers = document.getElementById('lineNumbers');
+      
+      const lines = codeEditor.value.split('\n');
+      const lineCount = lines.length;
+      
+      let lineNumbersHTML = '';
+      for (let i = 1; i <= lineCount; i++) {
+        lineNumbersHTML += `${i}<br>`;
+      }
+      
+      lineNumbers.innerHTML = lineNumbersHTML;
+      
+      // Adjust editor height based on content
+      codeEditor.style.height = 'auto';
+      codeEditor.style.height = (codeEditor.scrollHeight) + 'px';
+    }
+
+    // Function to count stats (lines, chars)
+    function countStats() {
+      const codeEditor = document.getElementById('codeEditor');
+      const lineCount = codeEditor.value.split('\n').length;
+      const charCount = codeEditor.value.length;
+      
+      document.getElementById('lineCount').textContent = `Lines: ${lineCount}`;
+      document.getElementById('charCount').textContent = `Chars: ${charCount}`;
+    }
+
+    // Function to switch tabs
+    function switchTab(tab) {
+      // Hide all content
+      document.getElementById('notesContent').classList.add('hidden');
+      document.getElementById('doubtsContent').classList.add('hidden');
+      
+      // Reset all tab styles
+      document.getElementById('notesTab').classList.remove('bg-blue-500', 'text-white');
+      document.getElementById('notesTab').classList.add('bg-gray-200', 'text-gray-700');
+      document.getElementById('doubtsTab').classList.remove('bg-blue-500', 'text-white');
+      document.getElementById('doubtsTab').classList.add('bg-gray-200', 'text-gray-700');
+      
+      // Show selected content and style tab
+      if (tab === 'notes') {
+        document.getElementById('notesContent').classList.remove('hidden');
+        document.getElementById('notesTab').classList.remove('bg-gray-200', 'text-gray-700');
+        document.getElementById('notesTab').classList.add('bg-blue-500', 'text-white');
+      } else if (tab === 'doubts') {
+        document.getElementById('doubtsContent').classList.remove('hidden');
+        document.getElementById('doubtsTab').classList.remove('bg-gray-200', 'text-gray-700');
+        document.getElementById('doubtsTab').classList.add('bg-blue-500', 'text-white');
+      }
+    }
+
+    // Function to load notes from localStorage
+    function loadNotes() {
+      const storedNotes = localStorage.getItem('notes');
+      if (storedNotes) {
+        notes = JSON.parse(storedNotes);
+        updateNotesList();
+      }
+    }
+
+    // Function to update notes list
+    function updateNotesList() {
+      const notesList = document.getElementById('notesList');
+      const noteCount = document.getElementById('noteCount');
+      
+      if (notes.length === 0) {
+        notesList.innerHTML = '<li class="text-gray-400 text-center py-4">No notes yet</li>';
+        noteCount.textContent = '0';
+        return;
+      }
+      
+      notesList.innerHTML = '';
+      notes.forEach((note, index) => {
+        const noteItem = document.createElement('li');
+        noteItem.classList.add(
+          'p-2', 
+          'rounded', 
+          'cursor-pointer',
+          'hover:bg-gray-200',
+          'flex',
+          'justify-between',
+          'items-center'
+        );
+        
+        if (currentNoteId === index) {
+          noteItem.classList.add('bg-blue-100');
+        }
+        
+        noteItem.innerHTML = `
+          <span class="truncate" title="${note.title}">${note.title}</span>
+          <button class="text-red-500 hover:text-red-700" onclick="deleteNote(${index}, event)">
+            <i class="fas fa-trash-alt"></i>
+          </button>
+        `;
+        
+        noteItem.addEventListener('click', function(e) {
+          if (e.target.tagName !== 'BUTTON' && !e.target.closest('button')) {
+            loadNote(index);
+          }
+        });
+        
+        notesList.appendChild(noteItem);
+      });
+      
+      noteCount.textContent = notes.length;
+    }
+
+    // Function to create a new note
+    function newNote(title = '') {
+      currentNoteId = null;
+      document.getElementById('id_title').value = title;
+      document.getElementById('id_content').value = '';
+      document.getElementById('id_title').focus();
+      
+      // Switch to notes tab if not already active
+      document.getElementById('notesTab').click();
+      
+      // Update UI to show which note is active
+      updateNotesList();
+    }
+
+    // Function to load a note
+    function loadNote(index) {
+      if (index >= 0 && index < notes.length) {
+        const note = notes[index];
+        document.getElementById('id_title').value = note.title;
+        document.getElementById('id_content').value = note.content;
+        currentNoteId = index;
+        
+        // Update UI to show which note is active
+        updateNotesList();
+      }
+    }
+
+    // Function to save a note
+    function saveNote() {
+      const title = document.getElementById('id_title').value.trim();
+      const content = document.getElementById('id_content').value.trim();
+      
+      if (!title || !content) {
+        alert('Please enter both title and content for your note.');
+        return;
+      }
+      
+      const note = {
+        title: title,
+        content: content,
+        timestamp: new Date().toISOString()
+      };
+      
+      if (currentNoteId !== null) {
+        // Update existing note
+        notes[currentNoteId] = note;
+      } else {
+        // Add new note
+        notes.push(note);
+        currentNoteId = notes.length - 1;
+      }
+      
+      // Save to localStorage and update UI
+      localStorage.setItem('notes', JSON.stringify(notes));
+      updateNotesList();
+      
+      // Optional: Submit to server
+      document.getElementById('noteForm').submit();
+    }
+
+    // Function to delete a note
+    function deleteNote(index, event) {
+      event.stopPropagation();
+      if (confirm('Are you sure you want to delete this note?')) {
+        notes.splice(index, 1);
+        localStorage.setItem('notes', JSON.stringify(notes));
+        
+        if (currentNoteId === index) {
+          newNote();
+        } else if (currentNoteId > index) {
+          currentNoteId--;
+        }
+        
+        updateNotesList();
+      }
+    }
+
+    // Function to format text in the note editor
+    function formatText(format) {
+      const textarea = document.getElementById('id_content');
+      const start = textarea.selectionStart;
+      const end = textarea.selectionEnd;
+      const selectedText = textarea.value.substring(start, end);
+      let formattedText = '';
+      
+      switch(format) {
+        case 'bold':
+          formattedText = `**${selectedText}**`;
+          break;
+        case 'italic':
+          formattedText = `_${selectedText}_`;
+          break;
+        case 'underline':
+          formattedText = `<u>${selectedText}</u>`;
+          break;
+        case 'h1':
+          formattedText = `# ${selectedText}`;
+          break;
+        case 'list':
+          formattedText = `\n- ${selectedText.split('\n').join('\n- ')}`;
+          break;
+        case 'code':
+          formattedText = `\`\`\`\n${selectedText}\n\`\`\``;
+          break;
+        default:
+          formattedText = selectedText;
+      }
+      
+      // Replace the selected text with the formatted text
+      textarea.value = textarea.value.substring(0, start) + formattedText + textarea.value.substring(end);
+      
+      // Set the cursor position after the inserted text
+      textarea.selectionStart = start + formattedText.length;
+      textarea.selectionEnd = start + formattedText.length;
+      
+      // Focus back on the textarea
+      textarea.focus();
+    }
+    
+    // Function for quick note taking
+    function quickNote() {
+      // Switch to notes tab and create a new note
+      document.getElementById('notesTab').click();
+      
+      // If a video is selected, use its title
+      if (selectedVideo) {
+        newNote(`Quick Note: ${selectedVideo.snippet.title}`);
+      } else {
+        newNote('Quick Note');
+      }
+    }
+    
+    // Theme switching for code editor
+    document.getElementById('themeSelect').addEventListener('change', function() {
+      const editor = document.getElementById('codeEditor');
+      const lineNumbers = document.getElementById('lineNumbers');
+      
+      if (this.value === 'light') {
+        editor.classList.remove('bg-gray-900', 'text-green-400');
+        editor.classList.add('bg-white', 'text-gray-800');
+        lineNumbers.classList.remove('bg-gray-700', 'text-gray-400');
+        lineNumbers.classList.add('bg-gray-200', 'text-gray-600');
+      } else {
+        editor.classList.remove('bg-white', 'text-gray-800');
+        editor.classList.add('bg-gray-900', 'text-green-400');
+        lineNumbers.classList.remove('bg-gray-200', 'text-gray-600');
+        lineNumbers.classList.add('bg-gray-700', 'text-gray-400');
+      }
+    });
+  </script>
+{% endblock %}

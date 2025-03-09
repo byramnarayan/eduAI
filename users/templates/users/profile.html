@@ -1,7 +1,8 @@
 {% extends "base/base.html" %}
 {% block content %}
-    <body >
-        <div class="font-std mb-10 w-full rounded-2xl bg-white border border p-10 font-normal leading-relaxed text-gray-900 shadow-xl">
+    <body>
+        <div class="font-std mb-10 w-full rounded-2xl bg-white border p-10 font-normal leading-relaxed text-gray-900 border border-gray-800">
+
             <div class="flex flex-col md:flex-row">
                 <div class="md:w-1/3 text-center mb-8 md:mb-0">
                     <img src="{{ user.profile.image.url }}" alt="Profile Picture" class="rounded-full w-48 h-48 mx-auto mb-4 border-4 border-orange-300 transition-transform duration-300 hover:scale-105 ring ring-gray-300">
@@ -48,7 +49,7 @@
                     
                 
                 </div>
-                <h2 class="text-xl font-semibold text-orange-800 mb-2 mt-3">Hoobies:</h2>
+                <h2 class="text-xl font-semibold text-orange-800 mb-2 mt-3">Hobbies:</h2>
                         <li class="flex items-center">
                             {{ user.profile.hobbies }}
                         </li>
@@ -56,19 +57,463 @@
             </div>
 
         </div>
+        </div>
+
+        <div class="font-std mb-10 w-full rounded-2xl bg-white border p-10 font-normal leading-relaxed text-gray-900 border border-gray-800">    
+
+            <div class="flex justify-between items-center mb-6">
+                <h1 class="text-2xl font-bold text-center">Simple Resume Generator</h1>
+                <button id="autoFillFromProfile" class="bg-orange-600 text-white py-2 px-4 rounded-lg hover:bg-orange-700 transition-colors duration-300">
+                    Auto-fill from Profile
+                </button>
+            </div>
+            
+            <form id="resumeForm" class="mb-8">
+                <!-- Personal Information Section -->
+                <div class="mb-6">
+                    <h2 class="text-xl font-semibold mb-3 border-b pb-2">Personal Information</h2>
+                    <div class="grid grid-cols-2 gap-4">
+                        <div>
+                            <label class="block mb-1">Full Name</label>
+                            <input type="text" id="fullName" class="w-full border rounded p-2" required>
+                        </div>
+                        <div>
+                            <label class="block mb-1">Job Title</label>
+                            <input type="text" id="jobTitle" class="w-full border rounded p-2" required>
+                        </div>
+                        <div>
+                            <label class="block mb-1">Email</label>
+                            <input type="email" id="email" class="w-full border rounded p-2" required>
+                        </div>
+                        <div>
+                            <label class="block mb-1">Phone</label>
+                            <input type="tel" id="phone" class="w-full border rounded p-2" required>
+                        </div>
+                        <div class="col-span-2">
+                            <label class="block mb-1">Professional Summary</label>
+                            <textarea id="summary" class="w-full border rounded p-2" rows="3" required></textarea>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Education Section -->
+                <div class="mb-6">
+                    <h2 class="text-xl font-semibold mb-3 border-b pb-2">Education</h2>
+                    <div id="educationContainer">
+                        <div class="education-entry mb-4 p-3 border rounded">
+                            <div class="grid grid-cols-2 gap-4">
+                                <div>
+                                    <label class="block mb-1">Degree</label>
+                                    <input type="text" class="degree w-full border rounded p-2" required>
+                                </div>
+                                <div>
+                                    <label class="block mb-1">Institution</label>
+                                    <input type="text" class="institution w-full border rounded p-2" required>
+                                </div>
+                                <div>
+                                    <label class="block mb-1">Year</label>
+                                    <input type="text" class="year w-full border rounded p-2" required>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <button type="button" id="addEducation" class="mt-2 bg-blue-500 text-white py-1 px-3 rounded">Add Education</button>
+                </div>
+                
+                <!-- Experience Section -->
+                <div class="mb-6">
+                    <h2 class="text-xl font-semibold mb-3 border-b pb-2">Work Experience</h2>
+                    <div id="experienceContainer">
+                        <div class="experience-entry mb-4 p-3 border rounded">
+                            <div class="grid grid-cols-2 gap-4">
+                                <div>
+                                    <label class="block mb-1">Position</label>
+                                    <input type="text" class="position w-full border rounded p-2" required>
+                                </div>
+                                <div>
+                                    <label class="block mb-1">Company</label>
+                                    <input type="text" class="company w-full border rounded p-2" required>
+                                </div>
+                                <div>
+                                    <label class="block mb-1">Duration</label>
+                                    <input type="text" class="duration w-full border rounded p-2" placeholder="2018 - 2022" required>
+                                </div>
+                                <div>
+                                    <label class="block mb-1">Location</label>
+                                    <input type="text" class="location w-full border rounded p-2" required>
+                                </div>
+                                <div class="col-span-2">
+                                    <label class="block mb-1">Responsibilities</label>
+                                    <textarea class="responsibilities w-full border rounded p-2" rows="3" required></textarea>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <button type="button" id="addExperience" class="mt-2 bg-blue-500 text-white py-1 px-3 rounded">Add Experience</button>
+                </div>
+                
+                <!-- Skills Section -->
+                <div class="mb-6">
+                    <h2 class="text-xl font-semibold mb-3 border-b pb-2">Skills</h2>
+                    <div>
+                        <label class="block mb-1">Skills (comma separated)</label>
+                        <textarea id="skills" class="w-full border rounded p-2" rows="2" required></textarea>
+                    </div>
+                </div>
+                
+                <div class="text-center">
+                    <button type="submit" class="bg-green-600 text-white py-2 px-6 rounded-lg font-bold">Generate Resume</button>
+                </div>
+            </form>
+            
+            <!-- Preview Section (hidden initially) -->
+            <div id="resumePreview" class="hidden">
+                <div class="flex justify-between items-center mb-4">
+                    <h2 class="text-xl font-semibold">Resume Preview</h2>
+                    <button id="downloadPdf" class="bg-blue-600 text-white py-2 px-4 rounded">Download PDF</button>
+                </div>
+                
+                <div id="resumeContent" class="p-6 border rounded">
+                    <!-- Content will be filled by JavaScript -->
+                </div>
+            </div>
+            
+            <!-- Hidden container for PDF generation -->
+            <div id="pdfContainer" style="position: absolute; left: -9999px;"></div>
+        </div>
+        
+        <!-- JavaScript for form handling and PDF generation -->
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+        <script>
+            document.addEventListener('DOMContentLoaded', function() {
+                // Store profile data for auto-fill functionality
+                const profileData = {
+                    fullName: "{{ user.first_name }} {{ user.last_name }}" || "{{ user.username }}",
+                    jobTitle: "{{ user.profile.position }}",
+                    email: "{{ user.email }}",
+                    phone: "{{ user.profile.phone }}",
+                    bio: "{{ user.profile.bio }}",
+                    location: "{{ user.profile.location }}",
+                    hobbies: "{{ user.profile.hobbies }}",
+                    institute: "{{ user.profile.insitute }}"
+                };
+                
+                // Auto-fill from profile button handler
+                document.getElementById('autoFillFromProfile').addEventListener('click', function() {
+                    document.getElementById('fullName').value = profileData.fullName;
+                    document.getElementById('jobTitle').value = profileData.jobTitle;
+                    document.getElementById('email').value = profileData.email;
+                    document.getElementById('phone').value = profileData.phone;
+                    
+                    // Create a professional summary from bio
+                    document.getElementById('summary').value = profileData.bio;
+                    
+                    // Pre-fill the first education entry with institute if available
+                    if (profileData.institute) {
+                        const firstEducationEntry = document.querySelector('.education-entry');
+                        firstEducationEntry.querySelector('.institution').value = profileData.institute;
+                    }
+                    
+                    // Pre-fill the first experience entry with position if available
+                    if (profileData.jobTitle) {
+                        const firstExperienceEntry = document.querySelector('.experience-entry');
+                        firstExperienceEntry.querySelector('.position').value = profileData.jobTitle;
+                        firstExperienceEntry.querySelector('.location').value = profileData.location || '';
+                    }
+                    
+                    // Pre-fill skills with hobbies if available
+                    if (profileData.hobbies) {
+                        document.getElementById('skills').value = profileData.hobbies.replace(/\s*,\s*/g, ', ');
+                    }
+                    
+                    // Show a notification
+                    showNotification('Form has been auto-filled with your profile data!');
+                });
+                
+                // Function to show a temporary notification
+                function showNotification(message) {
+                    const notification = document.createElement('div');
+                    notification.textContent = message;
+                    notification.className = 'fixed top-4 right-4 bg-green-600 text-white py-2 px-4 rounded-lg shadow-lg';
+                    document.body.appendChild(notification);
+                    
+                    // Remove after 3 seconds
+                    setTimeout(() => {
+                        notification.classList.add('opacity-0', 'transition-opacity', 'duration-500');
+                        setTimeout(() => {
+                            document.body.removeChild(notification);
+                        }, 500);
+                    }, 3000);
+                }
+                
+                // Add Education Entry
+                document.getElementById('addEducation').addEventListener('click', function() {
+                    const container = document.getElementById('educationContainer');
+                    const entry = document.querySelector('.education-entry').cloneNode(true);
+                    
+                    // Clear inputs
+                    entry.querySelectorAll('input').forEach(input => input.value = '');
+                    
+                    // Add remove button if it's not the first entry
+                    if (container.children.length > 0) {
+                        const removeBtn = document.createElement('button');
+                        removeBtn.textContent = 'Remove';
+                        removeBtn.className = 'mt-2 bg-red-500 text-white py-1 px-3 rounded';
+                        removeBtn.addEventListener('click', function() {
+                            container.removeChild(entry);
+                        });
+                        entry.appendChild(removeBtn);
+                    }
+                    
+                    container.appendChild(entry);
+                });
+                
+                // Add Experience Entry
+                document.getElementById('addExperience').addEventListener('click', function() {
+                    const container = document.getElementById('experienceContainer');
+                    const entry = document.querySelector('.experience-entry').cloneNode(true);
+                    
+                    // Clear inputs
+                    entry.querySelectorAll('input, textarea').forEach(input => input.value = '');
+                    
+                    // Add remove button if it's not the first entry
+                    if (container.children.length > 0) {
+                        const removeBtn = document.createElement('button');
+                        removeBtn.textContent = 'Remove';
+                        removeBtn.className = 'mt-2 bg-red-500 text-white py-1 px-3 rounded';
+                        removeBtn.addEventListener('click', function() {
+                            container.removeChild(entry);
+                        });
+                        entry.appendChild(removeBtn);
+                    }
+                    
+                    container.appendChild(entry);
+                });
+                
+                // Form Submission
+                document.getElementById('resumeForm').addEventListener('submit', function(e) {
+                    e.preventDefault();
+                    generateResume();
+                });
+                
+                // Generate Resume
+                function generateResume() {
+                    const fullName = document.getElementById('fullName').value;
+                    const jobTitle = document.getElementById('jobTitle').value;
+                    const email = document.getElementById('email').value;
+                    const phone = document.getElementById('phone').value;
+                    const summary = document.getElementById('summary').value;
+                    const skills = document.getElementById('skills').value;
+                    
+                    // Get Education Entries
+                    const educationEntries = [];
+                    document.querySelectorAll('.education-entry').forEach(entry => {
+                        educationEntries.push({
+                            degree: entry.querySelector('.degree').value,
+                            institution: entry.querySelector('.institution').value,
+                            year: entry.querySelector('.year').value
+                        });
+                    });
+                    
+                    // Get Experience Entries
+                    const experienceEntries = [];
+                    document.querySelectorAll('.experience-entry').forEach(entry => {
+                        experienceEntries.push({
+                            position: entry.querySelector('.position').value,
+                            company: entry.querySelector('.company').value,
+                            duration: entry.querySelector('.duration').value,
+                            location: entry.querySelector('.location').value,
+                            responsibilities: entry.querySelector('.responsibilities').value
+                        });
+                    });
+                    
+                    // Build Resume HTML with inline styles for PDF generation
+                    let resumeHTML = `
+                        <div style="font-family: Arial, sans-serif; max-width: 800px; margin: 0 auto; padding: 20px; line-height: 1.5;">
+                            <div style="text-align: center; margin-bottom: 20px;">
+                                <h1 style="font-size: 24px; font-weight: bold; margin-bottom: 5px;">${fullName}</h1>
+                                <p style="font-size: 18px; margin: 5px 0;">${jobTitle}</p>
+                                <p style="margin: 5px 0;">${email} | ${phone}</p>
+                            </div>
+                            
+                            <div style="margin-bottom: 20px;">
+                                <h2 style="font-size: 18px; font-weight: bold; border-bottom: 1px solid #ccc; padding-bottom: 5px; margin-bottom: 10px;">Professional Summary</h2>
+                                <p style="margin-top: 5px;">${summary}</p>
+                            </div>
+                            
+                            <div style="margin-bottom: 20px;">
+                                <h2 style="font-size: 18px; font-weight: bold; border-bottom: 1px solid #ccc; padding-bottom: 5px; margin-bottom: 10px;">Education</h2>
+                                <ul style="list-style-type: none; padding: 0; margin: 0;">
+                    `;
+                    
+                    educationEntries.forEach(edu => {
+                        resumeHTML += `
+                            <li style="margin-bottom: 10px;">
+                                <div style="display: flex; justify-content: space-between;">
+                                    <strong>${edu.degree}</strong>
+                                    <span>${edu.year}</span>
+                                </div>
+                                <div>${edu.institution}</div>
+                            </li>
+                        `;
+                    });
+                    
+                    resumeHTML += `
+                                </ul>
+                            </div>
+                            
+                            <div style="margin-bottom: 20px;">
+                                <h2 style="font-size: 18px; font-weight: bold; border-bottom: 1px solid #ccc; padding-bottom: 5px; margin-bottom: 10px;">Work Experience</h2>
+                                <ul style="list-style-type: none; padding: 0; margin: 0;">
+                    `;
+                    
+                    experienceEntries.forEach(exp => {
+                        resumeHTML += `
+                            <li style="margin-bottom: 15px;">
+                                <div style="display: flex; justify-content: space-between;">
+                                    <strong>${exp.position}</strong>
+                                    <span>${exp.duration}</span>
+                                </div>
+                                <div style="display: flex; justify-content: space-between;">
+                                    <span>${exp.company}</span>
+                                    <span>${exp.location}</span>
+                                </div>
+                                <p style="margin-top: 5px;">${exp.responsibilities}</p>
+                            </li>
+                        `;
+                    });
+                    
+                    resumeHTML += `
+                                </ul>
+                            </div>
+                            
+                            <div>
+                                <h2 style="font-size: 18px; font-weight: bold; border-bottom: 1px solid #ccc; padding-bottom: 5px; margin-bottom: 10px;">Skills</h2>
+                                <p>${skills.split(',').map(skill => skill.trim()).join(' • ')}</p>
+                            </div>
+                        </div>
+                    `;
+                    
+                    // Show preview with tailwind styling
+                    const previewHTML = `
+                        <div class="resume-container">
+                            <div class="text-center mb-6">
+                                <h1 class="text-2xl font-bold">${fullName}</h1>
+                                <p class="text-lg">${jobTitle}</p>
+                                <p>${email} | ${phone}</p>
+                            </div>
+                            
+                            <div class="mb-6">
+                                <h2 class="text-lg font-semibold border-b pb-1 mb-2">Professional Summary</h2>
+                                <p>${summary}</p>
+                            </div>
+                            
+                            <div class="mb-6">
+                                <h2 class="text-lg font-semibold border-b pb-1 mb-2">Education</h2>
+                                <ul class="list-none">
+                    `;
+                    
+                    let previewEducation = '';
+                    educationEntries.forEach(edu => {
+                        previewEducation += `
+                            <li class="mb-2">
+                                <div class="flex justify-between">
+                                    <strong>${edu.degree}</strong>
+                                    <span>${edu.year}</span>
+                                </div>
+                                <div>${edu.institution}</div>
+                            </li>
+                        `;
+                    });
+                    
+                    let previewExperience = '';
+                    experienceEntries.forEach(exp => {
+                        previewExperience += `
+                            <li class="mb-4">
+                                <div class="flex justify-between">
+                                    <strong>${exp.position}</strong>
+                                    <span>${exp.duration}</span>
+                                </div>
+                                <div class="flex justify-between">
+                                    <span>${exp.company}</span>
+                                    <span>${exp.location}</span>
+                                </div>
+                                <p class="mt-1">${exp.responsibilities}</p>
+                            </li>
+                        `;
+                    });
+                    
+                    const fullPreviewHTML = previewHTML + previewEducation + `
+                                </ul>
+                            </div>
+                            
+                            <div class="mb-6">
+                                <h2 class="text-lg font-semibold border-b pb-1 mb-2">Work Experience</h2>
+                                <ul class="list-none">
+                    ` + previewExperience + `
+                                </ul>
+                            </div>
+                            
+                            <div>
+                                <h2 class="text-lg font-semibold border-b pb-1 mb-2">Skills</h2>
+                                <p>${skills.split(',').map(skill => skill.trim()).join(' • ')}</p>
+                            </div>
+                        </div>
+                    `;
+                    
+                    // Show preview
+                    document.getElementById('resumeContent').innerHTML = fullPreviewHTML;
+                    document.getElementById('resumePreview').classList.remove('hidden');
+                    
+                    // Set up PDF download using jsPDF
+                    document.getElementById('downloadPdf').addEventListener('click', function() {
+                        // Create container for PDF generation
+                        const pdfContainer = document.getElementById('pdfContainer');
+                        pdfContainer.innerHTML = resumeHTML;
+                        pdfContainer.style.width = '800px';
+                        pdfContainer.style.display = 'block';
+
+                        // Initialize jsPDF
+                        const { jsPDF } = window.jspdf;
+                        
+                        // Use html2canvas to convert the HTML to an image
+                        html2canvas(pdfContainer, {
+                            scale: 2, // Higher scale for better quality
+                            useCORS: true,
+                            logging: false,
+                            letterRendering: true
+                        }).then(canvas => {
+                            // Create PDF
+                            const pdf = new jsPDF('p', 'mm', 'a4');
+                            const imgWidth = 210; // A4 width in mm
+                            const pageHeight = 297; // A4 height in mm
+                            const imgHeight = canvas.height * imgWidth / canvas.width;
+                            let heightLeft = imgHeight;
+                            let position = 0;
+                            
+                            // Add canvas as image to PDF
+                            const imgData = canvas.toDataURL('image/png');
+                            pdf.addImage(imgData, 'PNG', 0, position, imgWidth, imgHeight);
+                            heightLeft -= pageHeight;
+                            
+                            // Add new pages if the content overflows
+                            while (heightLeft >= 0) {
+                                position = heightLeft - imgHeight;
+                                pdf.addPage();
+                                pdf.addImage(imgData, 'PNG', 0, position, imgWidth, imgHeight);
+                                heightLeft -= pageHeight;
+                            }
+                            
+                            // Download the PDF
+                            pdf.save(`${fullName.replace(/\s+/g, '_')}_Resume.pdf`);
+                            
+                            // Clean up
+                            pdfContainer.style.display = 'none';
+                        });
+                    });
+                }
+            });
+        </script>
     </body>
 {% endblock content %}
-<!-- <p class="pt-4 text-base font-bold flex items-center justify-center lg:justify-start">
-    <svg class="h-4 fill-current text-green-700 pr-4" xmlns="http://www.w3.org/2000/svg"
-        viewBox="0 0 20 20">
-        <path
-            d="M9 12H1v6a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-6h-8v2H9v-2zm0-1H0V5c0-1.1.9-2 2-2h4V2a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v1h4a2 2 0 0 1 2 2v6h-9V9H9v2zm3-8V2H8v1h4z" />
-    </svg> What you do
-</p>
-<p class="pt-2 text-gray-600 text-xs lg:text-sm flex items-center justify-center lg:justify-start">
-    <svg class="h-4 fill-current text-green-700 pr-4" xmlns="http://www.w3.org/2000/svg"
-        viewBox="0 0 20 20">
-        <path
-            d="M10 20a10 10 0 1 1 0-20 10 10 0 0 1 0 20zm7.75-8a8.01 8.01 0 0 0 0-4h-3.82a28.81 28.81 0 0 1 0 4h3.82zm-.82 2h-3.22a14.44 14.44 0 0 1-.95 3.51A8.03 8.03 0 0 0 16.93 14zm-8.85-2h3.84a24.61 24.61 0 0 0 0-4H8.08a24.61 24.61 0 0 0 0 4zm.25 2c.41 2.4 1.13 4 1.67 4s1.26-1.6 1.67-4H8.33zm-6.08-2h3.82a28.81 28.81 0 0 1 0-4H2.25a8.01 8.01 0 0 0 0 4zm.82 2a8.03 8.03 0 0 0 4.17 3.51c-.42-.96-.74-2.16-.95-3.51H3.07z" />
-    </svg> Your Location - 25.0000° N, 71.0000° W
-</p> -->

@@ -39,71 +39,65 @@
       </div>
       
     <!-- Right side: Compiler Section -->
-    <div id="compilerSection" class="bg-gray-800 p-6 rounded-lg shadow-md text-white">
+    <div id="compilerSection" class="bg-gray-900 p-6 rounded-lg shadow-md ">
       <div class="flex justify-between items-center mb-4">
-        <h2 class="text-2xl font-semibold">
-          <i class="fas fa-code mr-2"></i> Code Compiler
-        </h2>
-        <div class="flex space-x-2">
-          <select
-            id="themeSelect"
-            class="bg-gray-700 text-white px-3 py-2 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-          >
-            <option value="dark">Dark Theme</option>
-            <option value="light">Light Theme</option>
-          </select>
-          <button id="runButton" class="bg-green-500 text-white px-4 py-2 rounded-lg hover:bg-green-600 focus:outline-none focus:ring-2 focus:ring-green-500 transition">
-            <i class="fas fa-play mr-2"></i> Run
-          </button>
-          <button id="clearButton" class="bg-red-500 text-white px-4 py-2 rounded-lg hover:bg-red-600 focus:outline-none focus:ring-2 focus:ring-red-500 transition">
-            <i class="fas fa-trash-alt mr-2"></i> Clear
-          </button>
+        <h2 class="text-2xl font-semibold text-blue-400">Code Compiler</h2>
+        <div class="bg-green-500 hover:bg-green-600 p-2 rounded-lg cursor-pointer transition" title="Run Code">
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z" />
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+          </svg>
         </div>
       </div>
       
-      <form id="codeForm" method="POST" action="{% url 'run-code' %}" class="mt-4">
+      <form method="POST" action="" class="space-y-4">
         {% csrf_token %}
-        <div class="flex">
+        <div class="postion:relative">
+          <div class=" top-0 left-0 py-1 px-3 text-xs text-gray-400 bg-gray-800 ">editor.py</div>
+          <textarea
+            name="code"
+            class="w-full p-3 pt-8 border border-gray-700 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 bg-gray-800 text-blue-100 font-mono"
+            rows="10"
+            placeholder="Write your code here..."
+          ></textarea>
+        </div>
+
+        <div class="flex space-x-3">
           <select
             name="language"
-            class="bg-gray-700 text-white px-3 py-2 rounded-l-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+            class="p-2 border border-gray-700 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 bg-gray-800 text-gray-200"
           >
             <option value="python">Python</option>
+            <option value="c">C</option>
             <option value="javascript">JavaScript</option>
             <option value="java">Java</option>
-            <option value="cpp">C++</option>
-            <option value="c">C</option>
           </select>
-          <div class="flex-1 flex items-center justify-end space-x-4 bg-gray-700 px-3 rounded-r-lg text-sm">
-            <span id="lineCount">Lines: 1</span>
-            <span id="charCount">Chars: 0</span>
-          </div>
-        </div>
-        
-        <div class="mt-2 border border-gray-700 rounded-lg overflow-hidden">
-          <div class="flex">
-            <div id="lineNumbers" class="bg-gray-700 text-gray-400 p-2 text-right select-none font-mono">1<br></div>
-            <textarea
-              id="codeEditor"
-              name="code"
-              class="w-full p-2 bg-gray-900 text-green-400 outline-none resize-none font-mono"
-              placeholder="Write your code here..."
-              rows="10"
-            ></textarea>
-          </div>
-        </div>
-      </form>
-      
-      <!-- Output section -->
-      <div id="outputSection" class="mt-6 bg-gray-700 p-4 rounded-lg">
-        <div class="flex justify-between items-center mb-2">
-          <h3 class="font-medium">Output</h3>
-          <button id="copyOutputBtn" class="text-sm bg-gray-600 text-white px-2 py-1 rounded hover:bg-gray-500 transition">
-            <i class="fas fa-copy mr-1"></i> Copy
+
+          <button
+            type="submit"
+            class="flex-grow bg-blue-600 text-white p-2 rounded-lg hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 transition flex items-center justify-center"
+          >
+            <span>Compile & Run</span>
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 ml-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z" />
+            </svg>
           </button>
         </div>
-        <pre id="outputDisplay" class="bg-gray-900 p-3 rounded text-white font-mono text-sm overflow-auto max-h-40">// Code output will appear here</pre>
+      </form>
+
+      {% if output %}
+      <div class="mt-6">
+        <h3 class="text-lg font-medium text-green-400">Output:</h3>
+        <pre class="bg-gray-800 p-4 rounded-lg text-gray-200 font-mono border border-gray-700 overflow-x-auto">{{ output }}</pre>
       </div>
+      {% endif %}
+      
+      {% if errors %}
+      <div class="mt-6">
+        <h3 class="text-lg font-medium text-red-400">Errors:</h3>
+        <pre class="bg-gray-800 p-4 rounded-lg text-red-300 font-mono border border-gray-700 overflow-x-auto">{{ errors }}</pre>
+      </div>
+      {% endif %}
     </div>
   </div>
 
@@ -254,26 +248,176 @@
       </div>
     </div>
   
-    <!-- Floating Action Buttons -->
-    <div class="fixed bottom-10 right-10 flex flex-col space-y-4">
-      <button
+  <!-- Floating Action Buttons -->
+<div class="fixed bottom-10 right-10 flex flex-col space-y-4">
+  <button
+    id="floatingNoteBtn"
+    onclick="quickNote()"
+    class="bg-blue-500 text-white p-4 rounded-full shadow-lg hover:bg-blue-600 transition focus:outline-none"
+    title="Quick Note"
+  >
+    <i class="fas fa-edit"></i>
+  </button>
+  
+  <button
+    id="floatingDoubtBtn"
+    onclick="location.href='{% url 'doubt-create' %}'"
+    class="bg-red-500 text-white p-4 rounded-full shadow-lg hover:bg-red-600 transition focus:outline-none"
+    title="Ask a Doubt"
+  >
+    <i class="fas fa-question"></i>
+  </button>
+    <!-- Floating Button -->
+    <button
         id="floatingNoteBtn"
-        onclick="quickNote()"
-        class="bg-blue-500 text-white p-4 rounded-full shadow-lg hover:bg-blue-600 transition focus:outline-none"
-        title="Quick Note"
-      >
-        <i class="fas fa-edit"></i>
-      </button>
+        onclick="toggleNotePanel()"
+        class="bg-orange-500 text-white p-4 rounded-full shadow-lg hover:bg-orange-600 transition focus:outline-none flex items-center justify-center"
+        title="Ask AI"
+    >
       
-      <button
-        id="floatingDoubtBtn"
-        onclick="location.href='{% url 'doubt-create' %}'"
-        class="bg-red-500 text-white p-4 rounded-full shadow-lg hover:bg-red-600 transition focus:outline-none"
-        title="Ask a Doubt"
-      >
-        <i class="fas fa-question"></i>
-      </button>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <!-- Question mark bubble -->
+          <path d="M12 22c5.523 0 10-4.477 10-10S17.523 2 12 2 2 6.477 2 12c0 1.821.487 3.53 1.338 5L2 22l5-1.338A9.955 9.955 0 0012 22z" />
+          
+          <!-- Question mark -->
+          <path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3" />
+          <circle cx="12" cy="17" r="0.5" />
+        </svg>
+    </button>
+
+    <!-- Expandable Note Panel (Initially Hidden) -->
+    <div id="notePanel" class="hidden fixed top-1/4 left-1/4 w-1/2 h-1/2 bg-white rounded-lg shadow-xl p-4 z-50 flex flex-col">
+        <div class="flex justify-between items-center mb-3">
+            <h3 class="text-lg font-semibold text-orange-800">Ask AI: </h3>
+            <button onclick="toggleNotePanel()" class="text-gray-500 hover:text-gray-700">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                </svg>
+            </button>
+        </div>
+        <textarea 
+            id="noteText" 
+            class="flex-grow w-full px-3 py-2 border border-orange-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500 mb-3" 
+            placeholder="Write Question here..." 
+        ></textarea>
+        <div class="flex space-x-2">
+            <button 
+                onclick="generateIdea()" 
+                class="flex-1 px-4 py-2 bg-orange-500 text-white font-semibold rounded-lg shadow-md hover:bg-orange-600 transition"
+            >
+                Ask Question
+            </button>
+            <button 
+                onclick="clearNote()" 
+                class="px-4 py-2 bg-gray-200 text-gray-700 font-semibold rounded-lg shadow-md hover:bg-gray-300 transition"
+            >
+                Clear
+            </button>
+        </div>
     </div>
+  
+  <!-- Add this to your existing JavaScript section -->
+  <script>
+    function toggleNotePanel() {
+        const notePanel = document.getElementById('notePanel');
+        if (notePanel.classList.contains('hidden')) {
+            notePanel.classList.remove('hidden');
+            document.getElementById('noteText').focus();
+        } else {
+            notePanel.classList.add('hidden');
+        }
+    }
+    
+    function clearNote() {
+        document.getElementById('noteText').value = '';
+    }
+    
+    function generateIdea() {
+        const noteText = document.getElementById('noteText');
+        const selectedText = window.getSelection().toString();
+            
+        // If text is selected in the chat, use that as inspiration
+        // Otherwise use any text in the note field
+        const prompt = selectedText || noteText.value || "Need inspiration";
+            
+        // Show a temporary "generating" message
+        noteText.value = "Thinking about question...";
+            
+        // Use the same API endpoint you're already using for chat
+        fetch("{% url 'ai-home' %}", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                "X-CSRFToken": "{{ csrf_token }}"
+            },
+            body: JSON.stringify({ 
+                question: "Please provide a brief, structured response (max 3 short bullet points) about: " + prompt,
+                is_note: true
+            })
+        })
+        .then(response => response.json())
+        .then(data => {
+            // Format the response
+            let formattedResponse = formatNoteResponse(data.answer || "No response received");
+            
+            // Update the note area with the structured response
+            noteText.value = formattedResponse;
+        })
+        .catch(error => {
+            console.error("Error:", error);
+            noteText.value = "Error answering question. Please try again.";
+        });
+    }
+    
+    // Function to format the AI response into a clean, structured note
+    function formatNoteResponse(response) {
+        // Remove markdown formatting if present
+        let cleanResponse = response
+            .replace(/#{1,6}\s/g, '') // Remove headings
+            .replace(/\*\*/g, '')     // Remove bold markers
+            .replace(/\*/g, '')       // Remove italic markers
+            .replace(/`/g, '')        // Remove code markers
+            .trim();
+            
+        // Check if the response already has bullet points
+        if (cleanResponse.includes('- ')) {
+            // It has bullet points, ensure proper formatting
+            let points = cleanResponse.split('\n')
+                .filter(line => line.trim().length > 0)
+                .map(line => {
+                    // Standardize bullet points and limit line length
+                    return line.trim().startsWith('- ') 
+                        ? line.trim() 
+                        : '- ' + line.trim();
+                });
+                
+            // Limit to 3 bullet points maximum
+            if (points.length > 3) {
+                points = points.slice(0, 3);
+            }
+            
+            return points.join('\n');
+        } else {
+            // No bullet points, create structured format
+            // Split by sentences or paragraphs
+            let sentences = cleanResponse
+                .replace(/([.!?])\s+/g, "$1\n")
+                .split('\n')
+                .filter(s => s.trim().length > 0);
+                
+            // Limit to 3 points
+            if (sentences.length > 3) {
+                sentences = sentences.slice(0, 3);
+            }
+            
+            // Format as bullet points
+            return sentences
+                .map(s => '- ' + s.trim())
+                .join('\n');
+        }
+    }
+  </script>
+</div>
   </main>
 
   <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.21.1/axios.min.js"></script>
@@ -286,21 +430,6 @@
 
     // Initialize when DOM is loaded
     document.addEventListener('DOMContentLoaded', function() {
-      // Set up code editor
-      setupCodeEditor();
-      
-      // Set up run and clear buttons
-      document.getElementById('runButton').addEventListener('click', function(e) {
-        e.preventDefault();
-        document.getElementById('codeForm').submit();
-      });
-      
-      document.getElementById('clearButton').addEventListener('click', function() {
-        document.getElementById('codeEditor').value = '';
-        updateLineNumbers();
-        countStats();
-      });
-      
       // Set up notes buttons
       document.getElementById('saveNoteBtn').addEventListener('click', function(e) {
         e.preventDefault();
@@ -468,65 +597,6 @@
         selectedVideo = JSON.parse(storedVideo);
         selectVideo(selectedVideo);
       }
-    }
-
-    // Function to set up code editor
-    function setupCodeEditor() {
-      const codeEditor = document.getElementById('codeEditor');
-      
-      // Update line numbers when text changes
-      codeEditor.addEventListener('input', function() {
-        updateLineNumbers();
-        countStats();
-      });
-      
-      // Handle tab key
-      codeEditor.addEventListener('keydown', function(e) {
-        if (e.key === 'Tab') {
-          e.preventDefault();
-          const start = this.selectionStart;
-          const end = this.selectionEnd;
-          
-          this.value = this.value.substring(0, start) + '    ' + this.value.substring(end);
-          this.selectionStart = this.selectionEnd = start + 4;
-          
-          updateLineNumbers();
-          countStats();
-        }
-      });
-      
-      // Initialize line numbers
-      updateLineNumbers();
-    }
-
-    // Function to update line numbers
-    function updateLineNumbers() {
-      const codeEditor = document.getElementById('codeEditor');
-      const lineNumbers = document.getElementById('lineNumbers');
-      
-      const lines = codeEditor.value.split('\n');
-      const lineCount = lines.length;
-      
-      let lineNumbersHTML = '';
-      for (let i = 1; i <= lineCount; i++) {
-        lineNumbersHTML += `${i}<br>`;
-      }
-      
-      lineNumbers.innerHTML = lineNumbersHTML;
-      
-      // Adjust editor height based on content
-      codeEditor.style.height = 'auto';
-      codeEditor.style.height = (codeEditor.scrollHeight) + 'px';
-    }
-
-    // Function to count stats (lines, chars)
-    function countStats() {
-      const codeEditor = document.getElementById('codeEditor');
-      const lineCount = codeEditor.value.split('\n').length;
-      const charCount = codeEditor.value.length;
-      
-      document.getElementById('lineCount').textContent = `Lines: ${lineCount}`;
-      document.getElementById('charCount').textContent = `Chars: ${charCount}`;
     }
 
     // Function to switch tabs
@@ -740,23 +810,5 @@
         newNote('Quick Note');
       }
     }
-    
-    // Theme switching for code editor
-    document.getElementById('themeSelect').addEventListener('change', function() {
-      const editor = document.getElementById('codeEditor');
-      const lineNumbers = document.getElementById('lineNumbers');
-      
-      if (this.value === 'light') {
-        editor.classList.remove('bg-gray-900', 'text-green-400');
-        editor.classList.add('bg-white', 'text-gray-800');
-        lineNumbers.classList.remove('bg-gray-700', 'text-gray-400');
-        lineNumbers.classList.add('bg-gray-200', 'text-gray-600');
-      } else {
-        editor.classList.remove('bg-white', 'text-gray-800');
-        editor.classList.add('bg-gray-900', 'text-green-400');
-        lineNumbers.classList.remove('bg-gray-200', 'text-gray-600');
-        lineNumbers.classList.add('bg-gray-700', 'text-gray-400');
-      }
-    });
   </script>
 {% endblock %}

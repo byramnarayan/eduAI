@@ -1,0 +1,325 @@
+{% extends "base/base.html" %}
+{% block content %}
+    <div class="flex h-screen">
+        <!-- Sidebar for chat history -->
+        <div class="w-1/4 bg-orange-200 overflow-y-auto p-4 border-r border-orange-300">
+            <h2 class="text-xl font-bold mb-4 text-orange-800 text-center">Chat History</h2>
+            
+            <a href="{% url 'ai-home' %}" class="block mb-4 px-4 py-2 bg-orange-500 text-white font-semibold rounded-lg shadow-md hover:bg-orange-600 transition text-center">
+                New Chat
+            </a>
+            
+            <div class="space-y-2">
+                {% for chat in chats %}
+                    <a href="{% url 'view-chat' chat.id %}" 
+                       class="block p-3 rounded-lg {% if current_chat and current_chat.id == chat.id %}bg-orange-400 text-white{% else %}bg-orange-100 hover:bg-orange-300 text-black{% endif %} transition duration-150">
+                        <p class="font-medium truncate">{{ chat.title }}</p>
+                        <p class="text-xs {% if current_chat and current_chat.id == chat.id %}text-orange-100{% else %}text-gray-600{% endif %}">{{ chat.updated_at|date:"M d, Y" }}</p>
+                    </a>
+                {% endfor %}
+            </div>
+        </div>
+        
+        <!-- Main chat area -->
+        <div class="w-3/4 flex flex-col">
+            <div class="flex justify-center items-center p-4 border-b border-orange-300 bg-orange-50">
+                <h1 class="text-center px-5 py-2 bg-orange-400 text-white font-semibold rounded-lg shadow-md inline-block">
+                    {% if current_chat %}{{ current_chat.title }}{% else %}AI Chat{% endif %}
+                </h1>
+            </div>
+
+            <!-- AI Chat Box -->
+            <div id="answer" class="flex-1 p-6 overflow-y-auto bg-orange-50">
+                {% if messages %}
+                    {% for message in messages %}
+                        {% if message.message_type == 'user' %}
+                            <div class="flex justify-end mb-4">
+                                <div class="bg-orange-500 text-white px-5 py-3 rounded-lg max-w-md shadow-md">
+                                    <p class="font-semibold mb-1">You</p>
+                                    <p>{{ message.content }}</p>
+                                </div>
+                            </div>
+                        {% else %}
+                            <div class="flex justify-start mb-4">
+                                <div class="bg-orange-400 text-white px-5 py-3 rounded-lg max-w-2xl shadow-md">
+                                    <p class="font-semibold mb-2">AI Assistant</p>
+                                    <div class="chat-content">{{ message.content|safe }}</div>
+                                </div>
+                            </div>
+                        {% endif %}
+                    {% endfor %}
+                {% endif %}
+            </div>
+
+            <!-- Input and Send Button -->
+            <div class="p-4 border-t border-orange-300 bg-orange-50">
+                <div class="flex space-x-3">
+                    <textarea id="question" 
+                        class="w-full px-5 py-3 border border-orange-300 rounded-lg shadow-md focus:outline-none focus:ring-2 focus:ring-orange-500" 
+                        placeholder="Ask your question here..." 
+                        rows="2"
+                        onkeydown="handleEnter(event)"></textarea>
+                    <button class="px-6 py-3 bg-orange-500 text-white font-semibold rounded-lg shadow-md hover:bg-orange-600 transition" 
+                        onclick="sendQuestion()">Send</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Add marked.js for Markdown parsing -->
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+    
+    <script>
+        // Current chat ID if any
+        
+        
+        function handleEnter(event) {
+            if (event.key === "Enter" && !event.shiftKey) { 
+                event.preventDefault();  // Prevents newline in textarea
+                sendQuestion(); 
+            }
+        }
+    
+        function sendQuestion() {
+            const questionInput = document.getElementById('question');
+            const answerBox = document.getElementById('answer');
+            const question = questionInput.value.trim();
+    
+            if (!question) {
+                return;
+            }
+    
+            // Append user's question (Right aligned)
+            answerBox.innerHTML += `
+                <div class="flex justify-end mb-4">
+                    <div class="bg-orange-500 text-white px-5 py-3 rounded-lg max-w-md shadow-md">
+                        <p class="font-semibold mb-1">You</p>
+                        <p>${question}</p>
+                    </div>
+                </div>
+            `;
+    
+            // Clear input field immediately after submission
+            questionInput.value = "";
+            
+            // Scroll to bottom
+            answerBox.scrollTop = answerBox.scrollHeight;
+    
+            // Show typing indicator
+            answerBox.innerHTML += `
+                <div id="typing-indicator" class="flex justify-start mb-4">
+                    <div class="bg-orange-300 px-5 py-3 rounded-lg shadow-md">
+                        <p class="font-semibold mb-1">AI Assistant</p>
+                        <p>Typing<span class="dot-typing">...</span></p>
+                    </div>
+                </div>
+            `;
+            
+            // Scroll to typing indicator
+            answerBox.scrollTop = answerBox.scrollHeight;
+    
+            fetch("{% url 'ai-home' %}", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                    "X-CSRFToken": "{{ csrf_token }}"
+                },
+                body: JSON.stringify({ 
+                    question: question,
+                    chat_id: currentChatId
+                })
+            })
+            .then(response => response.json())
+            .then(data => {
+                // Remove typing indicator
+                const typingIndicator = document.getElementById('typing-indicator');
+                if (typingIndicator) {
+                    typingIndicator.remove();
+                }
+                
+                // Save the chat ID for future messages
+                if (!currentChatId && data.chat_id) {
+                    currentChatId = data.chat_id;
+                }
+                
+                // Format the response with Markdown
+                const formattedAnswer = marked.parse(data.answer || "No answer received from AI.");
+                
+                // Append AI's response (Left aligned)
+                answerBox.innerHTML += `
+                    <div class="flex justify-start mb-4">
+                        <div class="bg-orange-400 text-white px-5 py-3 rounded-lg max-w-2xl shadow-md">
+                            <p class="font-semibold mb-2">AI Assistant</p>
+                            <div class="chat-content">${formattedAnswer}</div>
+                        </div>
+                    </div>
+                `;
+                
+                // Scroll to bottom again after receiving response
+                answerBox.scrollTop = answerBox.scrollHeight;
+                
+                // If this is a new chat, reload to update sidebar
+                if (!window.location.href.includes('/chat/')) {
+                    window.location.href = "/chat/" + data.chat_id + "/";
+                }
+            })
+            .catch(error => {
+                console.error("Error:", error);
+                
+                // Remove typing indicator
+                const typingIndicator = document.getElementById('typing-indicator');
+                if (typingIndicator) {
+                    typingIndicator.remove();
+                }
+                
+                answerBox.innerHTML += `
+                    <div class="flex justify-start mb-4">
+                        <div class="bg-red-500 text-white px-5 py-3 rounded-lg max-w-md shadow-md">
+                            <p class="font-semibold mb-1">Error</p>
+                            <p>There was an error processing your request.</p>
+                        </div>
+                    </div>
+                `;
+                // Scroll to bottom
+                answerBox.scrollTop = answerBox.scrollHeight;
+            });
+        }
+        
+        // Apply Markdown formatting to existing messages
+        document.addEventListener('DOMContentLoaded', function() {
+            const chatContents = document.querySelectorAll('.chat-content');
+            chatContents.forEach(element => {
+                const originalText = element.innerHTML;
+                element.innerHTML = marked.parse(originalText);
+            });
+        });
+    </script>
+    
+    <!-- Add enhanced styles -->
+    <style>
+        /* Chat content formatting */
+        .chat-content h1, 
+        .chat-content h2, 
+        .chat-content h3 {
+            margin-top: 1em;
+            margin-bottom: 0.5em;
+            font-weight: bold;
+        }
+        
+        .chat-content h1 {
+            font-size: 1.5em;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.3);
+            padding-bottom: 0.2em;
+        }
+        
+        .chat-content h2 {
+            font-size: 1.3em;
+        }
+        
+        .chat-content h3 {
+            font-size: 1.1em;
+        }
+        
+        .chat-content ul, 
+        .chat-content ol {
+            margin-left: 1.5em;
+            margin-bottom: 1em;
+            padding-left: 0.5em;
+        }
+        
+        .chat-content ul {
+            list-style-type: disc;
+        }
+        
+        .chat-content ol {
+            list-style-type: decimal;
+        }
+        
+        .chat-content li {
+            margin-bottom: 0.5em;
+        }
+        
+        .chat-content p {
+            margin-bottom: 0.8em;
+        }
+        
+        .chat-content strong {
+            font-weight: bold;
+            color: #FFECB3; /* Light gold for emphasis */
+        }
+        
+        .chat-content pre {
+            background-color: rgba(0, 0, 0, 0.2);
+            padding: 0.8em;
+            border-radius: 0.4em;
+            overflow-x: auto;
+            margin: 0.8em 0;
+            border-left: 3px solid #FFD700;
+        }
+        
+        .chat-content code {
+            font-family: monospace;
+            background-color: rgba(0, 0, 0, 0.15);
+            padding: 0.1em 0.3em;
+            border-radius: 0.2em;
+        }
+        
+        .chat-content blockquote {
+            border-left: 3px solid rgba(255, 255, 255, 0.5);
+            padding-left: 1em;
+            margin: 1em 0 1em 0.5em;
+            font-style: italic;
+        }
+        
+        .chat-content table {
+            border-collapse: collapse;
+            width: 100%;
+            margin: 1em 0;
+        }
+        
+        .chat-content th,
+        .chat-content td {
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            padding: 0.5em;
+            text-align: left;
+        }
+        
+        .chat-content th {
+            background-color: rgba(0, 0, 0, 0.2);
+            font-weight: bold;
+        }
+        
+        /* Typing indicator animation */
+        .dot-typing {
+            position: relative;
+            animation: dotTyping 1.5s infinite linear;
+        }
+        
+        @keyframes dotTyping {
+            0% { content: "."; }
+            33% { content: ".."; }
+            66% { content: "..."; }
+        }
+        
+        /* Custom scrollbar */
+        #answer::-webkit-scrollbar {
+            width: 8px;
+        }
+        
+        #answer::-webkit-scrollbar-track {
+            background: rgba(237, 137, 54, 0.1);
+        }
+        
+        #answer::-webkit-scrollbar-thumb {
+            background-color: rgba(237, 137, 54, 0.5);
+            border-radius: 20px;
+        }
+        
+        /* Improve chat message width */
+        @media (min-width: 768px) {
+            .max-w-2xl {
+                max-width: 42rem;
+            }
+        }
+    </style>
+{% endblock %}

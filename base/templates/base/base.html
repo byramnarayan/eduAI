@@ -1,0 +1,170 @@
+{% load static %}
+# It is part of template inheritance
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <meta property="og:image" content="{% static 'blog/image.png' %}">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        
+        <!-- Include TailwindCSS from CDN (only once) -->
+        <script src="https://cdn.tailwindcss.com"></script>
+        
+        <script src="https://cdn.tiny.cloud/1/no-api-key/tinymce/5/tinymce.min.js" referrerpolicy="origin"></script>
+
+    
+        {% if title %}
+            <title>Edu AI - {{ title }}</title>
+        {% else %}
+            <title>Edu AI</title>
+        {% endif %}
+    
+        <style>
+            #compilerPanel {
+                position: fixed;
+                right: 0;
+                top: 0;
+                width: 300px;
+                height: 100%;
+                background-color: #f4f4f4;
+                border-left: 2px solid #ccc;
+                display: none;
+                padding: 10px;
+            }
+            #compilerPanel textarea {
+                width: 100%;
+                height: 70%;
+                font-family: monospace;
+            }
+            #compilerPanel button {
+                width: 100%;
+                padding: 10px;
+                margin-top: 10px;
+                background-color: #4CAF50;
+                color: white;
+                border: none;
+                font-size: 16px;
+                cursor: pointer;
+            }
+            #compilerPanel button:hover {
+                background-color: #45a049;
+            }
+            #exitCompilerButton {
+                position: absolute;
+                top: 10px;
+                right: 10px;
+                background-color: #f44336;
+                color: white;
+                padding: 5px 10px;
+                border: none;
+                border-radius: 50%;
+                font-size: 16px;
+                cursor: pointer;
+            }
+            #compilerPanel select {
+                width: 100%;
+                margin-top: 10px;
+                padding: 5px;
+                font-size: 16px;
+            }
+            #openCompilerButton {
+                position: fixed;
+                right: 10px;
+                bottom: 20px;
+                font-size: 24px;
+                padding: 15px;
+                background-color: #f44336;
+                color: white;
+                border: none;
+                cursor: pointer;
+                border-radius: 50%;
+            }
+            #openCompilerButton:hover {
+                background-color: #e53935;
+            }
+        </style>
+    </head>
+    
+
+    <header class="bg-orange-400 text-white fixed top-0 w-full shadow-md">
+        <nav class="container mx-auto flex items-center justify-between p-4">
+            <div class="flex items-center space-x-4">
+                <a class="text-xl font-semibold" href="#">
+                    <!-- Logo SVG -->
+                    <svg width="45" height="45" viewBox="0 0 500 500" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <rect x="0.5" y="0.5" width="499" height="499" rx="89.5" fill="black" stroke="black"/>
+                        <path d="M227.949 74.255C238.732 61.5497 258.337 61.5498 269.12 74.255L301.97 112.96C306.89 118.758 314.027 122.212 321.626 122.473L372.246 124.217C388.803 124.787 400.947 139.997 397.836 156.27L388.177 206.807C386.764 214.199 388.5 221.846 392.968 227.903L423.47 269.257C433.273 282.547 428.955 301.444 414.353 309.158L369.232 332.994C362.547 336.525 357.649 342.698 355.729 350.011L342.732 399.509C338.508 415.598 320.88 424.077 305.674 417.335L259.479 396.852C252.51 393.763 244.56 393.763 237.591 396.852L191.396 417.335C176.189 424.077 158.561 415.598 154.337 399.509L141.341 350.011C139.421 342.698 134.523 336.525 127.838 332.994L82.7165 309.158C68.115 301.444 63.7971 282.547 73.5993 269.257L104.102 227.903C108.569 221.846 110.306 214.199 108.893 206.807L99.2332 156.27C96.1229 139.997 108.266 124.787 124.824 124.217L175.444 122.473C183.043 122.212 190.179 118.758 195.1 112.96L227.949 74.255Z" fill="#F5F5F5"/>
+                      </svg>
+                </a>
+                <div class="hidden md:flex space-x-4">
+                    <a class="px-4 py-2 border border-white rounded hover:bg-white hover:text-gray-900" href="{% url 'base-home' %}">Home</a>
+                    <a class="px-4 py-2 border border-white rounded hover:bg-white hover:text-gray-900" href="{%url 'ai-home'%}">Try AI</a>
+                </div>
+            </div>
+    
+            <button id="menu-toggle" class="md:hidden px-4 py-2 border border-white rounded hover:bg-white hover:text-gray-900">
+                Menu
+            </button>
+    
+            <div id="menu" class="hidden md:flex flex-col md:flex-row md:items-center md:space-x-2 absolute md:relative top-full left-0 w-full md:w-auto bg-orange-400 md:bg-transparent p-4 md:p-0 shadow-md md:shadow-none space-y-2 md:space-y-0">
+                {% if user.is_authenticated %}
+                <div class="flex flex-col md:flex-row md:items-center w-full md:w-auto space-y-2 md:space-y-0 md:space-x-2">
+                    <a href="{%url 'Community-Home'%}" class="px-4 py-2 border border-white rounded hover:bg-white hover:text-gray-900 text-center">Community</a>
+                    
+                    <a href="{%url 'compiler'%}" class="px-4 py-2 border border-white rounded hover:bg-white hover:text-gray-900 text-center">compiler</a>
+                    <a href="{% url 'note-create' %}" class="px-4 py-2 border border-white rounded hover:bg-white hover:text-gray-900 text-center">
+                        Create Note
+                    </a>
+                    
+                    <a href="{%url 'doubt-create'%}" class="px-4 py-2 border border-white rounded hover:bg-white hover:text-gray-900 text-center">Ask doubts</a>
+                    <a href="{% url 'profile' %}" class="px-4 py-2 border border-white rounded hover:bg-white hover:text-gray-900 text-center">Profile</a>
+                    <form method="POST" action="{% url 'logout' %}" class="w-full md:w-auto text-center md:inline-block">
+                        {% csrf_token %}
+                        <button class="px-4 py-2 border border-white rounded hover:bg-white hover:text-gray-900 w-full md:w-auto">Logout</button>
+                    </form>
+                </div>
+                {% else %}
+                <div class="flex flex-col md:flex-row md:items-center w-full md:w-auto space-y-2 md:space-y-0 md:space-x-2">
+                    <a href="{% url 'login' %}" class="px-4 py-2 border border-white rounded hover:bg-white hover:text-gray-900 text-center">LogIn</a>
+                    <a href="{% url 'register' %}" class="px-4 py-2 border border-white rounded hover:bg-white hover:text-gray-900 text-center">Register</a>
+                </div>
+                {% endif %}
+            </div>
+        </nav>
+    </header>
+    
+    
+    
+    <script>
+        document.getElementById('menu-toggle').addEventListener('click', function() {
+            document.getElementById('menu').classList.toggle('hidden');
+        });
+    </script>
+    
+
+    <main class="pt-20 mx-auto p-4">
+        <div class="w-full">
+            {% if messages %}
+                {% for message in messages %}
+                    <div class="px-4 py-2 mb-2 text-sm font-medium rounded-md 
+                                {% if message.tags == 'error' %}bg-red-100 text-red-800{% endif %}
+                                {% if message.tags == 'success' %}bg-green-100 text-green-800{% endif %}
+                                {% if message.tags == 'info' %}bg-blue-100 text-blue-800{% endif %}
+                                {% if message.tags == 'warning' %}bg-yellow-100 text-yellow-800{% endif %}">
+                        {{ message }}
+                    </div>
+                {% endfor %}
+            {% endif %}
+            <form method="post" enctype="multipart/form-data">
+                {% csrf_token %}
+            </form>
+
+            {% block content %}{% endblock %}
+        </div>
+    </main>
+
+    
+
+
+</body>
+</html>

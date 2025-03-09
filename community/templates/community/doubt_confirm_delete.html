@@ -1,0 +1,20 @@
+{% extends "base/base.html" %}
+
+{% block content %}
+<div class="max-w-lg mx-auto mt-20">
+    <div class="bg-white p-6 rounded-lg shadow-md text-center">
+        <h2 class="text-xl font-semibold text-gray-900">Are you sure you want to delete this doubt?</h2>
+        <p class="text-gray-600 mt-2">{{ object.title }}</p>
+
+        <form method="POST" class="mt-4">
+            {% csrf_token %}
+            <button type="submit" class="bg-red-500 text-white px-4 py-2 rounded-md hover:bg-red-600">
+                Yes, Delete
+            </button>
+            <a href="{% url 'Community-Home' %}" class="ml-2 bg-gray-300 text-gray-800 px-4 py-2 rounded-md hover:bg-gray-400">
+                Cancel
+            </a>
+        </form>
+    </div>
+</div>
+{% endblock content %}

@@ -1,0 +1,30 @@
+{% extends "base/base.html" %}
+
+{% block content %}
+    {% for note in notes %} 
+        <article class="bg-white p-4 border-b border-gray-300 max-w-xl mx-auto mb-6">
+            <div class="flex items-start gap-4">
+                <!-- Profile Picture -->
+                <img class="rounded-full w-12 h-12 border border-gray-300 object-cover" 
+                     src="{{ note.user.profile.image.url }}" 
+                     alt="Author Profile Picture">
+
+                <div class="flex-1">
+                    <!-- Name and Date -->
+                    <div class="flex items-center space-x-2">
+                        <a href="#" class="font-semibold text-gray-900 hover:underline">{{ note.user }}</a>
+                        <small class="text-gray-500">{{ note.date_created | date:"F d, Y"}}</small>
+                    </div>
+
+                    <!-- Title (Bold & Underlined) -->
+                    <h2 class="font-bold underline text-gray-800 mt-2">
+                        <a href="{% url 'note-detail' note.id %}" class="hover:text-blue-600">{{ note.title }}</a>
+                    </h2>
+
+                    <!-- Description -->
+                    <p class="text-gray-700 mt-2">{{ note.content }}</p>
+                </div>
+            </div>
+        </article>
+    {% endfor %}
+{% endblock content %}

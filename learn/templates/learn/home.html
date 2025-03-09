@@ -1,0 +1,73 @@
+
+{% extends "base/base.html" %}
+{% block content %} 
+  <!-- Main content of the second page -->
+  <main class="pt-20 mx-auto p-4">
+    <div class="text-center">
+      <h1 class="text-3xl font-semibold">Enter Your Interest</h1>
+      <p class="mt-4">Search for courses and enhance your skills based on your interests.</p>
+      
+      <input id="interestInput" type="text" class="mt-4 p-2 border border-gray-300 rounded-md" placeholder="Enter your interest">
+      <button onclick="searchVideos()" class="mt-4 bg-blue-500 text-white p-2 rounded-md">Search</button>
+
+      <!-- Video Results Section -->
+      <div id="videoList" class="video-container mt-8 max-h-[80vh] overflow-auto grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+        <!-- Video results will be populated here -->
+      </div>
+    </div>
+  </main>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.21.1/axios.min.js"></script>
+  <script>
+    const apiKey = 'AIzaSyD5DcV6sI-s9NCEKdQjVF2a19lG4696L1U'; // Replace with a valid YouTube API key
+
+    function searchVideos() {
+      const query = document.getElementById('interestInput').value;
+      if (!query) {
+        alert("Please enter a search query.");
+        return;
+      }
+      const url = `https://www.googleapis.com/youtube/v3/search?part=snippet&q=${query}&key=${apiKey}&type=video&maxResults=12`;
+      console.log('Request URL:', url);  // Log the URL to the console
+
+      axios.get(url)
+        .then(response => {
+          console.log('API Response:', response);  // Log the API response
+          const videos = response.data.items;
+          if (videos.length === 0) {
+            alert("No videos found. Try a different search.");
+          } else {
+            displayVideos(videos);
+          }
+        })
+        .catch(error => {
+          console.error('Error fetching videos:', error);
+        });
+    }
+
+    function displayVideos(videos) {
+      const videoList = document.getElementById('videoList');
+      videoList.innerHTML = ''; // Clear previous search results
+
+      videos.forEach(video => {
+        const videoElement = document.createElement('div');
+        videoElement.classList.add('bg-white', 'p-4', 'rounded-lg', 'shadow-md', 'text-center');
+
+        const videoIframe = document.createElement('iframe');
+        videoIframe.src = `https://www.youtube.com/embed/${video.id.videoId}`;
+        videoIframe.frameBorder = '0';
+        videoIframe.allow = 'accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture';
+        videoIframe.allowFullscreen = true;
+
+        const videoTitle = document.createElement('p');
+        videoTitle.innerText = video.snippet.title;
+
+        videoElement.appendChild(videoIframe);
+        videoElement.appendChild(videoTitle);
+
+        videoList.appendChild(videoElement);
+      });
+    }
+  </script>
+
+{% endblock content %}

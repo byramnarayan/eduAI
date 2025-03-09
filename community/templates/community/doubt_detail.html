@@ -1,0 +1,39 @@
+{% extends "base/base.html" %}
+{% block content %}
+    <article class="bg-white p-4 border-b border-gray-300 max-w-xl mx-auto mb-6">
+        <div class="flex items-start gap-4">
+            <!-- Profile Picture -->
+            <img class="rounded-full w-12 h-12 border border-gray-300 object-cover" 
+                 src="{{ object.author.profile.image.url }}" 
+                 alt="Author Profile Picture">
+
+            <div class="flex-1">
+                <!-- Name and Date -->
+                <div class="flex items-center space-x-2">
+                    <a href="#" class="font-semibold text-gray-900 hover:underline">{{ object.author }}</a>
+                    <small class="text-gray-500">{{ object.date | date:"F d, Y"}}</small>
+                </div>
+
+                <!-- Title (Bold & Underlined) -->
+                <h2 class="font-bold underline text-gray-800 mt-2">{{ object.title }}</h2>
+
+                <!-- Description -->
+                <p class="text-gray-700 mt-2">{{ object.content }}</p>
+
+                <!-- Update & Delete Buttons (Only for Author) -->
+                {% if object.author == user %}
+                    <div class="flex justify-end space-x-2 mt-4">
+                        <a href="{% url 'doubt-update' object.id %}" 
+                           class="px-4 py-2 bg-blue-500 text-white text-sm font-medium rounded-lg shadow-md hover:bg-blue-600 transition-all">
+                            Update
+                        </a>
+                        <a href="{% url 'doubt-delete' object.id %}" 
+                           class="px-4 py-2 bg-red-500 text-white text-sm font-medium rounded-lg shadow-md hover:bg-red-600 transition-all">
+                            Delete
+                        </a>
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+    </article>
+{% endblock content %}

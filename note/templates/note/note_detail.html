@@ -1,0 +1,24 @@
+{% extends "base/base.html" %}
+{% block content %}
+<article class="bg-white p-4 border-b border-gray-300 max-w-xl mx-auto mb-6">
+  <div class="flex items-start gap-4">
+    <img class="rounded-full w-12 h-12 border border-gray-300 object-cover"
+         src="{{ object.user.profile.image.url }}"
+         alt="Author Profile Picture" />
+
+    <div class="flex-1">
+      <div class="flex items-center space-x-2">
+        <a href="#" class="font-semibold text-gray-900 hover:underline">{{ object.user }}</a>
+        <small class="text-gray-500">{{ object.date_created | date:"F d, Y" }}</small>
+      </div>
+
+      <h2 class="font-bold underline text-gray-800 mt-2">{{ object.title }}</h2>
+
+      <!-- Display Formatted Content -->
+      <div class="text-gray-700 mt-2">
+        {{ object.content|safe }}
+      </div>
+    </div>
+  </div>
+</article>
+{% endblock content %}

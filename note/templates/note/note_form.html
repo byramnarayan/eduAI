@@ -1,0 +1,58 @@
+{% extends "base/base.html" %}
+{% load crispy_forms_tags %}
+
+{% block content %}
+<div class="max-w-3xl mx-auto mt-6">
+    <div class="bg-white p-6 rounded-lg shadow-lg">
+        <h3 class="text-gray-800 text-center text-3xl font-semibold mb-6">Create a New Note</h3>
+        
+        <!-- Profile Image & Note Form -->
+        <div class="flex items-start space-x-4">
+            <img class="w-12 h-12 rounded-full object-cover" src="{{ user.profile.image.url }}" alt="Profile Picture">
+            <form method="POST" class="flex-1">
+                {% csrf_token %}
+                
+                <!-- Title Input -->
+                <div class="mb-4">
+                    {{ form.title|as_crispy_field }}
+                </div>
+
+                <!-- Content Input (CKEditor) -->
+                <div class="mb-4">
+                    <textarea name="content" id="id_content" class="form-control w-full p-3 border border-gray-300 rounded-md" rows="24" placeholder="Write your note content here...">{{ form.content.value }}</textarea>
+                </div>
+
+                <!-- Submit Button -->
+                <div class="mt-4 flex justify-end">
+                    <button type="submit" class="bg-blue-500 text-white px-6 py-3 rounded-md hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-400">
+                        Save Note
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- Custom CSS to Adjust Height and Prevent Overflow -->
+<style>
+    #id_content {
+        height: 400px; /* Adjust the height as needed */
+        box-sizing: border-box; /* Prevent overflow */
+        width: 100%; /* Ensure the textarea fits the width of the container */
+    }
+    
+    .max-w-3xl {
+        overflow: hidden; /* Prevent overflowing from the parent container */
+    }
+</style>
+
+<!-- CKEditor Script -->
+<script src="https://cdn.ckeditor.com/ckeditor5/36.0.1/classic/ckeditor.js"></script>
+<script>
+    ClassicEditor
+        .create(document.querySelector('#id_content'))
+        .catch(error => {
+            console.error(error);
+        });
+</script>
+{% endblock content %}

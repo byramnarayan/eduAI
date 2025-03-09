@@ -1,0 +1,61 @@
+{% extends "base/base.html" %}
+{% load crispy_forms_tags %}
+{% block content %}
+    <div class="flex items-center justify-center bg-white-100 mt-2">
+        <div class="container max-w-md bg-white p-6 border border rounded-lg shadow-lg">
+            <h3 class="text-gray-800 text-center text-2xl font-semibold">REGISTER ACCOUNT</h3>
+            <form method="POST" action="" class="mt-6 space-y-4">
+                {% csrf_token %}
+                <fieldset class="form-group">
+                    <legend class="border-b mb-4 text-gray-700 text-lg font-medium">Join Today</legend>
+
+                    <!-- Username Field -->
+                    <div class="">
+                        <span class="absolute inset-y-0 left-0 flex items-center pl-3 text-gray-500">
+                            <i class="fas fa-user"></i>
+                        </span>
+                        {{ form.username|as_crispy_field }}
+                    </div>
+
+                    <!-- Email Field -->
+                    <div class="">
+                        <span class="absolute inset-y-0 left-0 flex items-center pl-3 text-gray-500">
+                            <i class="fas fa-envelope"></i>
+                        </span>
+                        {{ form.email|as_crispy_field }}
+                    </div>
+
+                    <!-- Password Field -->
+                    <div class="">
+                        <span class="absolute inset-y-0 left-0 flex items-center pl-3 text-gray-500">
+                            <i class="fas fa-lock"></i>
+                        </span>
+                        {{ form.password1|as_crispy_field }}
+                    </div>
+
+                    <!-- Confirm Password Field -->
+                    <div class="">
+                        <span class="absolute inset-y-0 left-0 flex items-center pl-3 text-gray-500">
+                            <i class="fas fa-lock"></i>
+                        </span>
+                        {{ form.password2|as_crispy_field }}
+                    </div>
+
+                </fieldset>
+
+                <div>
+                    <button type="submit" class="w-full bg-orange-500 text-white py-2 rounded-md shadow-md hover:bg-orange-600 transition-all duration-300">
+                        Sign Up
+                    </button>
+                </div>
+            </form>
+
+            <div class="border-t pt-3 text-center text-gray-600 mt-4">
+                <small>
+                    Already Have An Account? 
+                    <a href="{%url 'login'%}" class="text-orange-500 hover:underline">Sign In</a>
+                </small>
+            </div>
+        </div>
+    </div>
+{% endblock content %}

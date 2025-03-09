@@ -1,0 +1,107 @@
+{% extends "base/base.html" %}
+{% block content %}
+        <!-- Hero section -->
+        <section class="bg-orange-400 rounded py-4 mt-7">
+            <div class="container  mx-auto px-2">
+                <div class="flex flex-col md:flex-row items-center justify-between">
+                    <div class="md:w-1/2 mb-8 md:mb-0">
+                        <h1 class="text-white font-bold text-5xl leading-tight mb-6">Discover the best Way to Learn Online</h1>
+                        <p class="text-white text-xl mb-8">Organize topics, edit notes, collaborate in community, and compile code efficiently.</p>
+                        <a href="#"
+                        class="px-4 py-2 border border-white-500 text-white-500 hover:bg-orange-500 hover:text-black-500 rounded "href="#" >Learn Now</a>
+                    </div>
+                    <div class="md:w-1/2 h-center md:pl-8">
+                        <img src="https://images.unsplash.com/photo-1533279443086-d1c19a186416?q=80&w=1632&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D" alt="Coffee beans"
+                            class="w-full rounded-lg shadow-lg">
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Featured section -->
+        <section class="py-20">
+            <div class="container mx-auto px-4">
+                <h2 class="text-3xl font-bold text-gray-800 mb-8">Featured products</h2>
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                    <div class="bg-white rounded-lg shadow-md overflow-hidden">
+                        <img src="https://images.unsplash.com/photo-1581431886288-e216ea4ccf3f?q=80&w=1470&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D" alt="Coffee"
+                            class="w-full h-64 object-cover">
+                        <div class="p-6">
+                            <h3 class="text-xl font-bold text-gray-800 mb-2">Note Editor</h3>
+                            <p class="text-gray-700 text-base">A powerful, distraction-free editor with rich text formatting, code highlighting, and auto-save features. Capture, edit, and sync notes effortlessly across devices for ultimate productivity.</p>
+                            <div class="mt-4 flex items-center justify-between">
+                                <a href="{% url 'note-home' %}">
+                                    <button class="px-4 py-2 border border-black-500 text-black-500 hover:bg-orange-500 hover:text-white rounded">
+                                        Try Editor
+                                    </button>
+                                </a>
+                                
+                            </div>
+                        </div>
+                    </div>
+                    <div class="bg-white rounded-lg shadow-md overflow-hidden">
+                        <img src="https://images.unsplash.com/photo-1611223235982-891064f27716?q=80&w=1374&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D" alt="Coffee"
+                            class="w-full h-64 object-cover">
+                        <div class="p-6">
+                            <h3 class="text-xl font-bold text-gray-800 mb-2">Community Support</h3>
+                            <p class="text-gray-700 text-base">Engage with a vibrant community for guidance, collaboration, and knowledge-sharing. Get expert advice, real-time feedback, and support to enhance your learning and problem-solving experience.</p>
+                            <div class="mt-4 flex items-center justify-between">
+                                <a href="{%url 'Community-Home'%}" class="px-4 py-2 border border-black-500 text-black-500 hover:bg-orange-500 hover:text-white rounded">
+                                    Community   
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="bg-white rounded-lg shadow-md overflow-hidden">
+                        <img src="https://uploads.turbologo.com/uploads/design/preview_image/68462481/preview_image20241130-1-b01gae.png" alt="Coffee"
+                            class="w-full h-64 object-cover">
+                        <div class="p-6">
+                            <h3 class="text-xl font-bold text-gray-800 mb-2">Complier</h3>
+                            <p class="text-gray-700 text-base">Execute programs instantly. <br>detect errors efficiently <br> and streamline coding without additional software installation.</p>
+                            <div class="mt-4 flex items-center justify-between">
+                                <button
+                                class="px-4 py-2 border border-black-500 text-black-500 hover:bg-orange-500 hover:text-white rounded">Get Complier</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    
+    <!-- Footer -->
+    <footer class="bg-orange-400 text-white pt-8 pb-">
+        <div class="container mx-auto grid grid-cols-1 md:grid-cols-4 gap-6 px-6">
+            <div>
+                <h6 class="text-lg font-semibold mb-4">About</h6>
+                <p>EduAI is an educational site that offers AI chatbot support, video learning, note-taking features, and a secure login system.</p>
+            </div>
+            <div>
+                <h6 class="text-lg font-semibold mb-4">Products</h6>
+                <ul>
+                    <li><a href="#" class="hover:underline">AI ChatBot</a></li>
+                    <li><a href="#" class="hover:underline">Take Note</a></li>
+                    <li><a href="{%url 'Community-Home'%}" class="hover:underline">Community Support</a></li>
+                    <li><a href="#" class="hover:underline">Compiler</a></li>
+                </ul>
+            </div>
+            <div>
+                <h6 class="text-lg font-semibold mb-4">Useful Links</h6>
+                <ul>
+                    <li><a href="{% url 'profile' %}" class="hover:underline">Your Account</a></li>
+                    <li><a href="{% url 'base-about' %}" class="hover:underline">About Us</a></li>
+                    <li><a href="#" class="hover:underline">Suggest</a></li>
+                    <li><a href="#" class="hover:underline">Docs</a></li>
+                </ul>
+            </div>
+            <div>
+                <h6 class="text-lg font-semibold mb-4">Contact</h6>
+                <p>APSIT, MAH 400078, IND</p>
+                <p>Email: info@apsit.edu.in</p>
+                <p>Phone: +01 234 567 88</p>
+            </div>
+        </div>
+        <div class="text-center py-2 border-t bo  rder-orange-700 mt-4">
+            © 2025 Apsit Edu Hub
+        </div>
+    </footer>
+{% endblock content %}

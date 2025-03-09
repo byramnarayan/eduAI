@@ -1,0 +1,11 @@
+asgiref @ file:///croot/asgiref_1724072470684/work
+certifi==2025.1.31
+charset-normalizer==3.4.1
+crispy-tailwind==1.0.3
+Django @ file:///croot/django_1731615954020/work
+django-crispy-forms==2.3
+idna==3.10
+pillow @ file:///croot/pillow_1738010226202/work
+requests==2.32.3
+sqlparse @ file:///croot/sqlparse_1734704446487/work
+urllib3==2.3.0

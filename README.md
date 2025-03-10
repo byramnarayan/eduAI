@@ -1,7 +1,8 @@
 
 ## Project Demo:
-[![Watch the video](https://img.youtube.com/vi/Yti7aN_XRtk/0.jpg)](https://youtu.be/Yti7aN_XRtk)
-
+<a href="https://youtu.be/Yti7aN_XRtk" target="_blank" rel="noopener noreferrer">
+  <img src="#" alt="eduAI Demo" width="700">
+</a>
 # Project Setup Guide
 This guide explains how to create a virtual environment, install dependencies, and run the Django project.
 

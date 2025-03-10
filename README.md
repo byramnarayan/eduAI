@@ -1,5 +1,8 @@
-# Project Setup Guide
 
+## Project Demo:
+![project video](https://youtu.be/Yti7aN_XRtk)
+
+# Project Setup Guide
 This guide explains how to create a virtual environment, install dependencies, and run the Django project.
 
 ## **1. Create and Activate a Virtual Environment**

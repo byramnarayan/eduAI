@@ -1,0 +1,128 @@
+{% extends "base/base.html" %}
+{% load crispy_forms_tags %}
+
+{% block content %}
+<div class="max-w-xl mx-auto mt-6">
+    <div class="bg-white p-6 border border-orange-200 rounded-lg shadow-lg">
+        <div class="flex items-center justify-center mb-4">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 text-orange-500 mr-2" viewBox="0 0 20 20" fill="currentColor">
+                <path d="M13.586 3.586a2 2 0 112.828 2.828l-.793.793-2.828-2.828.793-.793zM11.379 5.793L3 14.172V17h2.828l8.38-8.379-2.83-2.828z" />
+            </svg>
+            <h3 class="text-orange-600 text-2xl font-bold">Create Note</h3>
+        </div>
+        
+        <div class="border-t border-b border-orange-100 py-3 mb-4">
+            <div class="flex items-start space-x-3">
+                <img class="w-10 h-10 rounded-full object-cover border-2 border-orange-300" src="{{ user.profile.image.url }}" alt="Profile Picture">
+                <div class="text-orange-800 text-sm font-medium">
+                    {{ user.username }}
+                    <div class="text-orange-400 text-xs">
+                        {% now "F j, Y" %}
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <form method="POST" class="bg-orange-50 p-4 rounded-lg">
+            {% csrf_token %}
+            
+            <!-- Title Input -->
+            <div class="mb-4">
+                <label for="id_title" class="block text-orange-700 font-medium mb-2">Title</label>
+                <input type="text" name="{{ form.title.name }}" id="id_title" class="w-full px-3 py-2 border border-orange-200 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent" placeholder="Note title...">
+            </div>
+
+            <!-- TinyMCE will replace this textarea -->
+            <div class="bg-white border border-orange-200 rounded-md p-2 shadow-inner">
+                {{ form.content|as_crispy_field }}
+            </div>
+
+            <!-- Tags and Options Section -->
+            <div class="flex flex-wrap gap-2 mt-4 mb-4">
+                <span class="bg-orange-100 text-orange-700 px-2 py-1 rounded-full text-sm font-medium inline-flex items-center">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 010 2.828l-7 7a2 2 0 01-2.828 0l-7-7A1.994 1.994 0 013 12V7a4 4 0 014-4z" />
+                    </svg>
+                    Add Tags
+                </span>
+                <span class="bg-orange-100 text-orange-700 px-2 py-1 rounded-full text-sm font-medium inline-flex items-center">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9" />
+                    </svg>
+                    Reminders
+                </span>
+            </div>
+
+            <!-- Submit Button -->
+            <div class="mt-6 flex justify-end">
+                <button type="button" class="bg-white text-orange-600 border border-orange-300 px-4 py-2 rounded-md hover:bg-orange-50 mr-2">
+                    Cancel
+                </button>
+                <button type="submit" class="bg-orange-500 text-white px-6 py-2 rounded-md hover:bg-orange-600 shadow-md">
+                    Save Note
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<!-- Notebook styled sidebar hint -->
+<div class="fixed left-0 top-1/4 bg-orange-500 p-2 rounded-r-lg shadow-lg hidden md:block">
+    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h7" />
+    </svg>
+</div>
+
+<!-- TinyMCE Integration -->
+<script src="https://cdn.tiny.cloud/1/no-api-key/tinymce/5/tinymce.min.js" referrerpolicy="origin"></script>
+<script>
+    tinymce.init({
+        selector: '#id_content',
+        height: 300,
+        content_css: [
+            'https://fonts.googleapis.com/css2?family=Quicksand:wght@400;500&display=swap',
+            'https://fonts.googleapis.com/css2?family=Lora:ital@0;1&display=swap'
+        ],
+        content_style: "body { font-family: 'Quicksand', sans-serif; color: #4B5563; }",
+        menubar: false,
+        statusbar: false,
+        plugins: [
+            'autolink link image lists checklist',
+            'searchreplace wordcount fullscreen',
+            'table emoticons'
+        ],
+        toolbar: 'formatselect | bold italic | bullist numlist checklist | link image emoticons | removeformat',
+        toolbar_mode: 'sliding',
+        skin: 'oxide',
+        placeholder: 'Start taking notes...',
+        setup: function(editor) {
+            editor.on('init', function() {
+                this.getContainer().style.boxShadow = 'none';
+                this.getContainer().style.borderRadius = '0.375rem';
+            });
+        }
+    });
+</script>
+
+<style>
+    /* Custom styles for form fields */
+    .form-control:focus {
+        border-color: #F97316 !important;
+        box-shadow: 0 0 0 0.25rem rgba(249, 115, 22, 0.25) !important;
+    }
+    
+    /* Style for TinyMCE editor */
+    .tox-tinymce {
+        border: none !important;
+    }
+    
+    .tox .tox-toolbar, .tox .tox-toolbar__overflow, .tox .tox-toolbar__primary {
+        background-color: #FFF7ED !important;
+        border-bottom: 1px solid #FFEDD5 !important;
+    }
+    
+    .tox .tox-tbtn--enabled, .tox .tox-tbtn--enabled:hover {
+        background: #FDBA74 !important;
+    }
+</style>
+{% endblock content %}

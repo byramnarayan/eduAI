@@ -38,7 +38,6 @@ INSTALLED_APPS = [
     'note.apps.NoteConfig',
     'learn.apps.LearnConfig',
     'ai.apps.AiConfig',
-    'compile.apps.CompileConfig',
     'crispy_forms', # add crispy forms
     "crispy_tailwind", # add crispy tailwind
     'django.contrib.admin',

@@ -1,31 +1,27 @@
 from django.db import models
-from django.utils import timezone
 from django.contrib.auth.models import User
+from django.utils import timezone
 
-class Chat(models.Model):
-    title = models.CharField(max_length=200)
-    user = models.ForeignKey(User, on_delete=models.CASCADE, null=True, blank=True)
+class ChatSession(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    title = models.CharField(max_length=255)
     created_at = models.DateTimeField(default=timezone.now)
-    updated_at = models.DateTimeField(auto_now=True)
-
+    
     def __str__(self):
-        return self.title
+        return f"{self.title} - {self.user.username}"
     
     class Meta:
-        ordering = ['-updated_at']
+        ordering = ['-created_at']
 
-class Message(models.Model):
-    MESSAGE_TYPES = (
-        ('user', 'User'),
-        ('ai', 'AI'),
-    )
-    chat = models.ForeignKey(Chat, related_name='messages', on_delete=models.CASCADE)
+class ChatMessage(models.Model):
+    session = models.ForeignKey(ChatSession, related_name='messages', on_delete=models.CASCADE)
+    is_user_message = models.BooleanField(default=True)  # True if from user, False if from AI
     content = models.TextField()
-    message_type = models.CharField(max_length=4, choices=MESSAGE_TYPES)
     timestamp = models.DateTimeField(default=timezone.now)
-
+    
     def __str__(self):
-        return f"{self.message_type}: {self.content[:50]}"
+        message_type = "User" if self.is_user_message else "AI"
+        return f"{message_type} message in {self.session.title}"
     
     class Meta:
         ordering = ['timestamp']

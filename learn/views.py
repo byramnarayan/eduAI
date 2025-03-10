@@ -1,6 +1,8 @@
 from django.shortcuts import render
 from .compiler_service import compile_and_run  # Import the compiler logic
+from django.contrib.auth.decorators import login_required  
 
+@login_required
 def home(request):
     output = None
     errors = None
@@ -29,6 +31,7 @@ import json
 from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
 
+@login_required
 @csrf_exempt  # In a production app, handle CSRF properly
 def run_code(request):
     if request.method != 'POST':

@@ -1,51 +1,105 @@
 {% extends "base/base.html" %}
 {% block content %}
-    <div class="bg-gradient-to-r from-purple-400 via-pink-500 to-red-500 p-6 text-center mb-8">
-        <h1 class="text-white text-3xl font-extrabold">Community Thoughts</h1>
-        <p class="text-white opacity-80 mt-2">Where curious minds connect</p>
-    </div>
-    
+<div class="bg-gradient-to-r from-orange-50 to-white py-8">
     <div class="max-w-4xl mx-auto px-4">
+        <h1 class="text-3xl font-bold text-orange-800 mb-6 text-center">Professional Guidance Hub</h1>
+        <p class="text-orange-700 text-center mb-8">Ask your questions and get expert answers from professionals in the field</p>
+        
+        <div class="mb-8 bg-white rounded-lg shadow-md p-6 border border-orange-200">
+            <a href="{% url 'doubt-create' %}" class="block w-full bg-orange-600 hover:bg-orange-700 text-white font-medium py-3 px-4 rounded-md text-center transition duration-200">
+                Ask Your Question
+            </a>
+        </div>
+        
         {% for doubts in doubts %} 
-            <article class="bg-white rounded-lg shadow-lg overflow-hidden mb-10 transform transition-transform hover:scale-102 hover:rotate-1">
-                <div class="bg-yellow-100 px-6 py-3 border-l-4 border-yellow-400">
-                    <h2 class="font-bold text-xl text-gray-800">
-                        <a href="{% url 'doubt-detail' doubts.id %}" class="hover:text-purple-600 transition-colors">{{ doubts.title }}</a>
-                    </h2>
-                </div>
-                
-                <div class="p-6">
-                    <div class="flex items-start gap-4">
-                        <!-- Profile Picture with fun border -->
-                        <div class="relative">
-                            <div class="absolute inset-0 bg-gradient-to-br from-green-300 to-blue-500 rounded-full transform -rotate-6 scale-110"></div>
-                            <img class="relative rounded-full w-14 h-14 object-cover border-2 border-white" 
-                                src="{{ doubts.author.profile.image.url }}" 
-                                alt="{{ doubts.author }}'s Profile Picture">
+            <article class="bg-white rounded-lg shadow-sm p-6 mb-6 border-l-4 border-orange-500 hover:shadow-md transition duration-200">
+                <div class="flex items-start gap-4">
+                    <!-- Profile Picture -->
+                    <div class="shrink-0">
+                        <img class="rounded-full w-12 h-12 border-2 border-orange-300 object-cover shadow-sm" 
+                             src="{{ doubts.author.profile.image.url }}" 
+                             alt="{{ doubts.author }}'s Profile Picture">
+                    </div>
+                    <div class="flex-1">
+                        <!-- Name and Date -->
+                        <div class="flex flex-wrap items-center justify-between">
+                            <a href="{% url 'profile' %}" class="font-semibold text-orange-900 hover:text-orange-700 transition">
+                                {{ doubts.author }}
+                            </a>
+                            <small class="text-orange-600 text-sm">{{ doubts.date | date:"F d, Y"}}</small>
                         </div>
-
-                        <div class="flex-1">
-                            <!-- Content -->
-                            <p class="text-gray-700 mb-4 leading-relaxed">{{ doubts.content }}</p>
-                            
-                            <!-- Author info with quirky styling -->
-                            <div class="flex items-center mt-4 pt-3 border-t border-dashed border-gray-200">
-                                <span class="inline-block bg-purple-100 rounded-full px-3 py-1 text-sm font-medium text-purple-800">
-                                    <a href="{% url 'profile' %}" class="hover:underline">{{ doubts.author }}</a>
-                                </span>
-                                <span class="ml-2 text-sm text-gray-500 italic">shared thoughts on {{ doubts.date | date:"F d, Y"}}</span>
-                            </div>
+                        <!-- Title (Bold & Styled) -->
+                        <h2 class="font-bold text-orange-800 mt-3 text-lg">
+                            <a href="{% url 'doubt-detail' doubts.id %}" class="hover:text-orange-600 transition">
+                                {{ doubts.title }}
+                            </a>
+                        </h2>
+                        <!-- Description -->
+                        <p class="text-gray-700 mt-2">{{ doubts.content|truncatechars:200 }}</p>
+                        
+                        <!-- Engagement Stats -->
+                        <div class="flex items-center mt-4 text-sm text-orange-700 space-x-4">
+                            <span class="flex items-center">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
+                                </svg>
+                                {{ doubts.comments|default:"0" }} answers
+                            </span>
+                            <span class="flex items-center">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+                                </svg>
+                                {{ doubts.views|default:"0" }} views
+                            </span>
                         </div>
                     </div>
                 </div>
-                
-                <!-- Quirky decorative element -->
-                <div class="h-1 w-full bg-gradient-to-r from-blue-300 via-green-300 to-yellow-300"></div>
             </article>
         {% empty %}
-            <div class="text-center py-20">
-                <p class="text-gray-500 text-xl">No thoughts shared yet... be the first to start the conversation!</p>
+            <div class="text-center py-12 bg-white rounded-lg border border-orange-200">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-12 w-12 mx-auto text-orange-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.228 9c.549-1.165 2.03-2 3.772-2 2.21 0 4 1.343 4 3 0 1.4-1.278 2.575-3.006 2.907-.542.104-.994.54-.994 1.093m0 3h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                </svg>
+                <h3 class="mt-4 text-lg font-medium text-orange-800">No questions yet</h3>
+                <p class="mt-2 text-orange-600">Be the first to ask a professional question!</p>
             </div>
         {% endfor %}
+        
+        <!-- Pagination (if needed) -->
+        {% if doubts.has_other_pages %}
+            <div class="flex justify-center mt-8">
+                <nav class="inline-flex rounded-md shadow-sm -space-x-px" aria-label="Pagination">
+                    {% if doubts.has_previous %}
+                        <a href="?page={{ doubts.previous_page_number }}" class="relative inline-flex items-center px-2 py-2 rounded-l-md border border-orange-300 bg-white text-sm font-medium text-orange-500 hover:bg-orange-50">
+                            <span class="sr-only">Previous</span>
+                            <!-- Previous arrow icon -->
+                            <svg class="h-5 w-5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
+                                <path fill-rule="evenodd" d="M12.707 5.293a1 1 0 010 1.414L9.414 10l3.293 3.293a1 1 0 01-1.414 1.414l-4-4a1 1 0 010-1.414l4-4a1 1 0 011.414 0z" clip-rule="evenodd" />
+                            </svg>
+                        </a>
+                    {% endif %}
+                    
+                    {% for num in doubts.paginator.page_range %}
+                        {% if doubts.number == num %}
+                            <span class="relative inline-flex items-center px-4 py-2 border border-orange-500 bg-orange-50 text-sm font-medium text-orange-800">{{ num }}</span>
+                        {% else %}
+                            <a href="?page={{ num }}" class="relative inline-flex items-center px-4 py-2 border border-orange-300 bg-white text-sm font-medium text-orange-600 hover:bg-orange-50">{{ num }}</a>
+                        {% endif %}
+                    {% endfor %}
+                    
+                    {% if doubts.has_next %}
+                        <a href="?page={{ doubts.next_page_number }}" class="relative inline-flex items-center px-2 py-2 rounded-r-md border border-orange-300 bg-white text-sm font-medium text-orange-500 hover:bg-orange-50">
+                            <span class="sr-only">Next</span>
+                            <!-- Next arrow icon -->
+                            <svg class="h-5 w-5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
+                                <path fill-rule="evenodd" d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z" clip-rule="evenodd" />
+                            </svg>
+                        </a>
+                    {% endif %}
+                </nav>
+            </div>
+        {% endif %}
     </div>
+</div>
 {% endblock content %}

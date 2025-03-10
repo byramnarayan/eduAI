@@ -1,8 +1,29 @@
 {% extends "base/base.html" %}
-{% block content %} 
-    <div class="sm:flex items-center max-w-screen-xl">  
+{% block content %}
+    <!-- Vision & Mission Section -->
+    <div class=" py-16">
+        <div class="max-w-screen-xl mx-auto px-6">
+            <div class="text-center mb-12">
+                <span class="text-black-500 border-b-2 border-orange-600 uppercase">Our Purpose</span>
+                <h2 class="my-4 font-bold text-3xl sm:text-4xl">Vision & <span class="text-orange-600">Mission</span></h2>
+            </div>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                <div class="bg-white p-8 border border-black rounded-lg ">
+                    <h3 class="text-2xl font-bold mb-4 text-orange-600">Our Vision</h3>
+                    <p class="text-gray-700">To create innovative solutions that transform industries and improve lives across the globe, setting new standards for excellence and sustainability in everything we do.</p>
+                </div>
+                <div class="bg-white p-8 border border-black rounded-lg shadow-md">
+                    <h3 class="text-2xl font-bold mb-4 text-orange-600">Our Mission</h3>
+                    <p class="text-gray-700">To deliver exceptional value through cutting-edge technology, fostering a culture of continuous innovation and maintaining the highest standards of integrity in all our relationships.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- About Company Section -->
+    <div class="sm:flex items-center max-w-screen-xl mx-auto">  
         <div class="sm:w-1/2 p-10">
-            <div class="image object-center text-center">
+            <div class="image object-center text-center border border-black rounded-lg shadow-lg">
                 <img src="https://images.unsplash.com/photo-1455849318743-b2233052fcff?q=80&w=1469&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D" alt="About Page"
                 class="w-full rounded-lg shadow-lg">
             </div>
@@ -10,13 +31,74 @@
         <div class="sm:w-1/2 p-5">
             <div class="text">
                 <span class="text-black-500 border-b-2 border-orange-600 uppercase">About us</span>
-                <h2 class="my-4 font-bold text-3xl  sm:text-4xl ">About <span class="text-indigo-600">Our Project</span>
+                <h2 class="my-4 font-bold text-3xl sm:text-4xl">About <span class="text-orange-600">Our Company</span>
                 </h2>
                 <p class="text-gray-700">
-                    Lorem ipsum dolor sit amet, consectetur adipisicing elit. Aliquid, commodi
-                    doloremque, fugiat illum magni minus nisi nulla numquam obcaecati placeat quia, repellat tempore
-                    voluptatum.
+                    Founded in 2018, our company has been at the forefront of technological innovation, delivering solutions that matter. We combine expertise in software development, data analytics, and user experience design to create products that solve real-world problems. Our dedicated team of professionals works tirelessly to ensure that every project exceeds expectations and delivers measurable results.
                 </p>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Team Section -->
+    <div class="p-10 ">
+        <div class="max-w-screen-xl mx-auto px-6">
+            <div class="text-center mb-12">
+                <span class="text-black-500 border-b-2 border-orange-600 uppercase">Our People</span>
+                <h2 class="my-4 font-bold text-3xl sm:text-4xl">Meet <span class="text-orange-600">The Team</span></h2>
+            </div>
+            
+            <!-- Team Profiles - Single Row with 5 Profiles -->
+            <div class="grid grid-cols-1 md:grid-cols-5 gap-6 ">
+                <!-- Team Member 1 -->
+                <div class="bg-white rounded-lg border border-black  shadow-md overflow-hidden">
+                    <div class="p-4 text-center">
+                        <div class="w-24 h-24 rounded-full bg-gray-300 mx-auto mb-3"></div>
+                        <h3 class="font-bold text-lg">Nihal</h3>
+                        <p class="text-gray-600 text-sm">Team Leader</p>
+                        <a href="https://example.com/sarah" class="text-indigo-600 text-sm mt-2 inline-block">Profile</a>
+                    </div>
+                </div>
+                
+                <!-- Team Member 2 -->
+                <div class="bg-white rounded-lg shadow-md overflow-hidden">
+                    <div class="p-4 text-center">
+                        <div class="w-24 h-24 rounded-full bg-gray-300 mx-auto mb-3"></div>
+                        <h3 class="font-bold text-lg">Dhruv Jain</h3>
+                        <p class="text-gray-600 text-sm">Developer</p>
+                        <a href="https://example.com/david" class="text-indigo-600 text-sm mt-2 inline-block">Profile</a>
+                    </div>
+                </div>
+                
+                <!-- Team Member 3 -->
+                <div class="bg-white rounded-lg shadow-md overflow-hidden">
+                    <div class="p-4 text-center">
+                        <div class="w-24 h-24 rounded-full bg-gray-300 mx-auto mb-3"></div>
+                        <h3 class="font-bold text-lg">Ramnarayan Maurya</h3>
+                        <p class="text-gray-600 text-sm">Lead Navigator</p>
+                        <a href="https://example.com/michael" class="text-indigo-600 text-sm mt-2 inline-block">Profile</a>
+                    </div>
+                </div>
+                
+                <!-- Team Member 4 -->
+                <div class="bg-white rounded-lg shadow-md overflow-hidden">
+                    <div class="p-4 text-center">
+                        <div class="w-24 h-24 rounded-full bg-gray-300 mx-auto mb-3"></div>
+                        <h3 class="font-bold text-lg">Unknown</h3>
+                        <p class="text-gray-600 text-sm">UX Designer</p>
+                        <a href="https://example.com/amanda" class="text-indigo-600 text-sm mt-2 inline-block">Profile</a>
+                    </div>
+                </div>
+                
+                <!-- Team Member 5 -->
+                <div class="bg-white rounded-lg shadow-md overflow-hidden">
+                    <div class="p-4 text-center">
+                        <div class="w-24 h-24 rounded-full bg-gray-300 mx-auto mb-3"></div>
+                        <h3 class="font-bold text-lg">Unknown</h3>
+                        <p class="text-gray-600 text-sm">free</p>
+                        <a href="https://example.com/robert" class="text-indigo-600 text-sm mt-2 inline-block">Profile</a>
+                    </div>
+                </div>
             </div>
         </div>
     </div>

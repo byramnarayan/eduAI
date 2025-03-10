@@ -117,7 +117,7 @@
         </section>
         
         <!-- Testimonials section -->
-        <section class="py-16 ">
+        <section class="py-16 bg-gray-50">
             <div class="container mx-auto px-4">
                 <div class="text-center mb-12">
                     <h2 class="text-4xl font-bold text-gray-800 mb-4">What Our Students Say</h2>
@@ -226,132 +226,52 @@
             </div>
         </section>
         
-        <!-- CTA Section with orange palette, spacing, and rounded corners -->
-        <section class="py-24 bg-gradient-to-r from-orange-500 to-orange-400 rounded-b-3xl">
+        <!-- CTA section -->
+        <section class="py-16 bg-gradient-to-r from-orange-500 to-orange-400">
             <div class="container mx-auto px-4 text-center">
-                <h2 class="text-3xl md:text-4xl font-bold text-white mb-8">Ready to Start Your Learning Journey?</h2>
-                <p class="text-white text-xl mb-10 max-w-3xl mx-auto">Join our community of passionate learners and unlock your full potential today.</p>
-                <div class="flex flex-wrap justify-center gap-6 mt-12">
+                <h2 class="text-3xl md:text-4xl font-bold text-white mb-6">Ready to Start Your Learning Journey?</h2>
+                <p class="text-white text-xl mb-8 max-w-3xl mx-auto">Join our community of passionate learners and unlock your full potential today.</p>
+                <div class="flex flex-wrap justify-center gap-4">
                     <a href="{% url 'register' %}" class="px-8 py-4 bg-white text-orange-500 font-bold rounded-full hover:bg-orange-600 hover:text-white transition duration-300 shadow-lg transform hover:scale-105">Sign Up Now</a>
                     <a href="{% url 'login' %}" class="px-8 py-4 border-2 border-white text-white font-bold rounded-full hover:bg-white hover:text-orange-500 transition duration-300">Log In</a>
                 </div>
             </div>
         </section>
-                
-        <!-- Enhanced Footer with orange palette and rounded top -->
-        <footer class="bg-orange-500 text-white pt-12 pb-6 rounded-t-3xl mt-8">
-            <div class="container mx-auto px-6">
-                <!-- Top footer section with logo and description -->
-                <div class="flex flex-col md:flex-row justify-between items-start mb-12">
-                    <div class="mb-8 md:mb-0 md:w-1/3">
-                        <h4 class="text-2xl font-bold mb-4">APSIT Edu Hub</h4>
-                        <p class="mb-6 text-orange-100">An educational platform powered by A.P. Shah Institute of Technology that offers AI chatbot support, video learning, note-taking features, and a secure learning environment.</p>
-                        <div class="flex space-x-4 mt-4">
-                            <a href="#" class="text-white hover:text-orange-200"><i class="fab fa-facebook-f"></i></a>
-                            <a href="#" class="text-white hover:text-orange-200"><i class="fab fa-twitter"></i></a>
-                            <a href="#" class="text-white hover:text-orange-200"><i class="fab fa-linkedin-in"></i></a>
-                            <a href="#" class="text-white hover:text-orange-200"><i class="fab fa-instagram"></i></a>
-                        </div>
-                    </div>
-                    
-                    <!-- Links section -->
-                    <div class="grid grid-cols-1 md:grid-cols-3 gap-8 md:w-2/3">
-                        <div>
-                            <h6 class="text-lg font-semibold mb-4 text-orange-200">Products</h6>
-                            <ul class="space-y-2">
-                                <li><a href="#" class="text-orange-50 hover:text-white transition duration-300">AI ChatBot</a></li>
-                                <li><a href="#" class="text-orange-50 hover:text-white transition duration-300">Take Note</a></li>
-                                <li><a href="{%url 'Community-Home'%}" class="text-orange-50 hover:text-white transition duration-300">Community Support</a></li>
-                                <li><a href="#" class="text-orange-50 hover:text-white transition duration-300">Compiler</a></li>
-                            </ul>
-                        </div>
-                        <div>
-                            <h6 class="text-lg font-semibold mb-4 text-orange-200">Useful Links</h6>
-                            <ul class="space-y-2">
-                                <li><a href="{% url 'profile' %}" class="text-orange-50 hover:text-white transition duration-300">Your Account</a></li>
-                                <li><a href="{% url 'base-about' %}" class="text-orange-50 hover:text-white transition duration-300">About Us</a></li>
-                                <li><a href="#" class="text-orange-50 hover:text-white transition duration-300">Suggest</a></li>
-                                <li><a href="#" class="text-orange-50 hover:text-white transition duration-300">Docs</a></li>
-                            </ul>
-                        </div>
-                        <div>
-                            <h6 class="text-lg font-semibold mb-4 text-orange-200">Contact</h6>
-                            <ul class="space-y-2 text-orange-50">
-                                <li class="flex items-start">
-                                    <span class="mr-2">📍</span>
-                                    <span>A.P. Shah Institute of Technology<br>Kasarvadavali, Thane (W) - 400601</span>
-                                </li>
-                                <li class="flex items-center">
-                                    <span class="mr-2">✉️</span>
-                                    <a href="mailto:info@apsit.edu.in" class="hover:text-white">info@apsit.edu.in</a>
-                                </li>
-                                <li class="flex items-center">
-                                    <span class="mr-2">📞</span>
-                                    <a href="tel:+0123456788" class="hover:text-white">+01 234 567 88</a>
-                                </li>
-                            </ul>
-                        </div>
-                    </div>
+        
+        <!-- Footer -->
+        <footer class="bg-orange-400 text-white pt-8 pb-6">
+            <div class="container mx-auto grid grid-cols-1 md:grid-cols-4 gap-6 px-6">
+                <div>
+                    <h6 class="text-lg font-semibold mb-4">About</h6>
+                    <p>EduAI is an educational site that offers AI chatbot support, video learning, note-taking features, and a secure login system.</p>
                 </div>
-                
-            
-                
-                <!-- Copyright section -->
-                <div class="text-center text-orange-200 pt-4">
-                    <p>© 2025 APSIT Edu Hub. All rights reserved.</p>
-                    <p class="text-sm mt-2">A service of A.P. Shah Institute of Technology</p>
+                <div>
+                    <h6 class="text-lg font-semibold mb-4">Products</h6>
+                    <ul>
+                        <li><a href="#" class="hover:underline">AI ChatBot</a></li>
+                        <li><a href="#" class="hover:underline">Take Note</a></li>
+                        <li><a href="{%url 'Community-Home'%}" class="hover:underline">Community Support</a></li>
+                        <li><a href="#" class="hover:underline">Compiler</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <h6 class="text-lg font-semibold mb-4">Useful Links</h6>
+                    <ul>
+                        <li><a href="{% url 'profile' %}" class="hover:underline">Your Account</a></li>
+                        <li><a href="{% url 'base-about' %}" class="hover:underline">About Us</a></li>
+                        <li><a href="#" class="hover:underline">Suggest</a></li>
+                        <li><a href="#" class="hover:underline">Docs</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <h6 class="text-lg font-semibold mb-4">Contact</h6>
+                    <p>APSIT, MAH 400078, IND</p>
+                    <p>Email: info@apsit.edu.in</p>
+                    <p>Phone: +01 234 567 88</p>
                 </div>
             </div>
+            <div class="text-center py-2 border-t border-orange-700 mt-4">
+                © 2025 Apsit Edu Hub
+            </div>
         </footer>
-        <style>
-            /* Paper texture background */
-            body {
-              background-color: #FFF7ED;
-              background-image: url("data:image/svg+xml,%3Csvg width='100' height='100' viewBox='0 0 100 100' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M11 18c3.866 0 7-3.134 7-7s-3.134-7-7-7-7 3.134-7 7 3.134 7 7 7zm48 25c3.866 0 7-3.134 7-7s-3.134-7-7-7-7 3.134-7 7 3.134 7 7 7zm-43-7c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zm63 31c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zM34 90c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zm56-76c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zM12 86c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm28-65c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm23-11c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zm-6 60c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm29 22c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zM32 63c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zm57-13c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zm-9-21c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2zM60 91c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2zM35 41c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2zM12 60c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2z' fill='%23FDBA74' fill-opacity='0.1' fill-rule='evenodd'/%3E%3C/svg%3E");
-            }
-          
-            /* Note content styling */
-            .note-content-display {
-              font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-              color: #4B5563;
-              line-height: 1.6;
-            }
-            
-            .note-content-display h1,
-            .note-content-display h2,
-            .note-content-display h3 {
-              color: #EA580C;
-              margin-top: 1rem;
-              margin-bottom: 0.5rem;
-            }
-            
-            .note-content-display p {
-              margin-bottom: 1rem;
-            }
-            
-            .note-content-display ul,
-            .note-content-display ol {
-              margin-left: 1.5rem;
-              margin-bottom: 1rem;
-            }
-            
-            .note-content-display a {
-              color: #EA580C;
-              text-decoration: underline;
-            }
-            
-            .note-content-display blockquote {
-              border-left: 3px solid #FDBA74;
-              padding-left: 1rem;
-              color: #71717A;
-              font-style: italic;
-              margin: 1rem 0;
-            }
-            
-            .note-content-display img {
-              max-width: 100%;
-              border-radius: 0.375rem;
-              margin: 1rem 0;
-            }
-          </style>
 {% endblock content %}

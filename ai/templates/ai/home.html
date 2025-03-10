@@ -1,325 +1,438 @@
 {% extends "base/base.html" %}
+{% load static %}
+
 {% block content %}
-    <div class="flex h-screen">
-        <!-- Sidebar for chat history -->
-        <div class="w-1/4 bg-orange-200 overflow-y-auto p-4 border-r border-orange-300">
-            <h2 class="text-xl font-bold mb-4 text-orange-800 text-center">Chat History</h2>
-            
-            <a href="{% url 'ai-home' %}" class="block mb-4 px-4 py-2 bg-orange-500 text-white font-semibold rounded-lg shadow-md hover:bg-orange-600 transition text-center">
+<div class="flex h-screen overflow-hidden">
+    <!-- Sidebar - Initially hidden on mobile -->
+     
+    <div id="sidebar" class="w-0 md:w-72 bg-orange-200 overflow-hidden transition-all duration-300 ease-in-out flex-shrink-0 absolute md:relative z-10 h-full shadow-lg">
+        <div class="p-4 h-full flex flex-col">
+            <h2 class="text-lg font-bold mb-4">Chat History</h2>
+            <button onclick="startNewChat()" class="w-full mb-4 px-4 py-2 bg-orange-500 text-white font-semibold rounded-lg shadow-md hover:bg-orange-600 transition">
                 New Chat
-            </a>
+            </button>
             
-            <div class="space-y-2">
-                {% for chat in chats %}
-                    <a href="{% url 'view-chat' chat.id %}" 
-                       class="block p-3 rounded-lg {% if current_chat and current_chat.id == chat.id %}bg-orange-400 text-white{% else %}bg-orange-100 hover:bg-orange-300 text-black{% endif %} transition duration-150">
-                        <p class="font-medium truncate">{{ chat.title }}</p>
-                        <p class="text-xs {% if current_chat and current_chat.id == chat.id %}text-orange-100{% else %}text-gray-600{% endif %}">{{ chat.updated_at|date:"M d, Y" }}</p>
+            <div class="space-y-2 overflow-y-auto flex-grow">
+                {% for session in chat_sessions %}
+                <div class="flex justify-between items-center p-2 rounded-lg {% if active_session.id == session.id %}bg-orange-300{% else %}hover:bg-orange-300{% endif %} transition duration-150">
+                    <a href="{% url 'ai-home' %}?session={{ session.id }}" class="block flex-grow truncate">
+                        {{ session.title }}
                     </a>
+                    <a href="{% url 'delete-session' session.id %}" onclick="return confirm('Are you sure you want to delete this chat?')" class="text-red-500 hover:text-red-700 ml-2 flex-shrink-0">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                        </svg>
+                    </a>
+                </div>
+                {% empty %}
+                <div class="text-center text-gray-500">No chat history yet</div>
                 {% endfor %}
             </div>
         </div>
-        
-        <!-- Main chat area -->
-        <div class="w-3/4 flex flex-col">
-            <div class="flex justify-center items-center p-4 border-b border-orange-300 bg-orange-50">
-                <h1 class="text-center px-5 py-2 bg-orange-400 text-white font-semibold rounded-lg shadow-md inline-block">
-                    {% if current_chat %}{{ current_chat.title }}{% else %}AI Chat{% endif %}
-                </h1>
-            </div>
 
-            <!-- AI Chat Box -->
-            <div id="answer" class="flex-1 p-6 overflow-y-auto bg-orange-50">
-                {% if messages %}
-                    {% for message in messages %}
-                        {% if message.message_type == 'user' %}
-                            <div class="flex justify-end mb-4">
-                                <div class="bg-orange-500 text-white px-5 py-3 rounded-lg max-w-md shadow-md">
-                                    <p class="font-semibold mb-1">You</p>
-                                    <p>{{ message.content }}</p>
-                                </div>
-                            </div>
-                        {% else %}
-                            <div class="flex justify-start mb-4">
-                                <div class="bg-orange-400 text-white px-5 py-3 rounded-lg max-w-2xl shadow-md">
-                                    <p class="font-semibold mb-2">AI Assistant</p>
-                                    <div class="chat-content">{{ message.content|safe }}</div>
-                                </div>
-                            </div>
-                        {% endif %}
-                    {% endfor %}
+    </div>
+    <!-- Overlay for mobile when sidebar is open -->
+    <div id="sidebarOverlay" class="hidden fixed inset-0 bg-black bg-opacity-50 z-0" onclick="toggleSidebar()"></div>
+
+    <!-- Main Content -->
+    <div class="flex-1 flex flex-col w-full overflow-hidden">
+        <!-- Header -->
+        <header class="bg-orange-500 shadow-md p-4 flex justify-between items-center">
+            <button id="toggleSidebar" class="md:hidden text-white p-1">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7" />
+                </svg>
+            </button>
+            <h1 class="text-white font-semibold truncate max-w-xs">
+                {% if active_session %}
+                    {{ active_session.title }}
+                {% else %}
+                    AI Chat
                 {% endif %}
-            </div>
+            </h1>
+            <div class="w-6"></div> <!-- Empty div for flex alignment, same width as menu button -->
+        </header>
 
-            <!-- Input and Send Button -->
-            <div class="p-4 border-t border-orange-300 bg-orange-50">
-                <div class="flex space-x-3">
-                    <textarea id="question" 
-                        class="w-full px-5 py-3 border border-orange-300 rounded-lg shadow-md focus:outline-none focus:ring-2 focus:ring-orange-500" 
-                        placeholder="Ask your question here..." 
-                        rows="2"
-                        onkeydown="handleEnter(event)"></textarea>
-                    <button class="px-6 py-3 bg-orange-500 text-white font-semibold rounded-lg shadow-md hover:bg-orange-600 transition" 
-                        onclick="sendQuestion()">Send</button>
+        <!-- Messages Area with auto-height bubbles -->
+        <div id="answer" class="flex-1 p-4 overflow-y-auto">
+            {% if active_messages %}
+                {% for message in active_messages %}
+                    {% if message.is_user_message %}
+                        <div class="flex justify-end mb-3">
+                            <div class="bg-orange-500 text-black px-4 py-2 rounded-lg max-w-xs md:max-w-md lg:max-w-lg text-right shadow-md">
+                                {{ message.content }}
+                            </div>
+                        </div>
+                    {% else %}
+                        <div class="flex justify-start mb-3">
+                            <div class="bg-orange-500 text-white px-4 py-2 rounded-lg max-w-xs md:max-w-md lg:max-w-lg text-left shadow-md ai-message">
+                                <div class="ai-message-content whitespace-pre-wrap">{{ message.content|safe }}</div>
+                            </div>
+                        </div>
+                    {% endif %}
+                {% endfor %}
+            {% endif %}
+        </div>
+
+        <!-- Thinking Indicator -->
+        <div id="thinkingIndicator" class="hidden px-4 py-2 mb-3">
+            <div class="flex items-center text-gray-500">
+                <div class="bg-orange-300 text-orange-800 px-4 py-2 rounded-lg max-w-xs md:max-w-md text-left shadow-md inline-flex items-center">
+                    <span>Thinking</span>
+                    <span class="dot-animation ml-2">.</span>
+                    <span class="dot-animation">.</span>
+                    <span class="dot-animation">.</span>
                 </div>
             </div>
         </div>
-    </div>
 
-    <!-- Add marked.js for Markdown parsing -->
-    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+        <!-- Input Area -->
+        <div class="p-3 md:p-4 border-t border-gray-200">
+            <div class="flex space-x-2 md:space-x-3">
+                <textarea id="question" 
+                    class="flex-1 px-3 md:px-4 py-2 border border-gray-300 rounded-lg shadow-md focus:outline-none focus:ring-2 focus:ring-orange-500 resize-none" 
+                    placeholder="Ask your question here..." 
+                    rows="2"
+                    onkeydown="handleEnter(event)"></textarea>
+                <button class="px-3 md:px-5 py-2 bg-orange-500 text-white font-semibold rounded-lg shadow-md hover:bg-orange-600 transition flex-shrink-0" 
+                    onclick="sendQuestion()">Send</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- CSS for formatted messages and animations -->
+<style>
+    /* Message formatting */
+    .ai-message-content {
+        line-height: 1.5;
+    }
     
-    <script>
-        // Current chat ID if any
+    .ai-message-content p {
+        margin-bottom: 0.75rem;
+    }
+    
+    .ai-message-content p:last-child {
+        margin-bottom: 0;
+    }
+    
+    .ai-message-content ul, .ai-message-content ol {
+        margin-left: 1.5rem;
+        margin-bottom: 0.75rem;
+    }
+    
+    .ai-message-content pre, .ai-message-content code {
+        background-color: rgba(0,0,0,0.1);
+        padding: 0.1rem 0.3rem;
+        border-radius: 3px;
+        font-family: monospace;
+        white-space: pre-wrap;
+    }
+    
+    .ai-message-content pre {
+        padding: 0.5rem;
+        margin: 0.5rem 0;
+        overflow-x: auto;
+    }
+    
+    /* Thinking animation */
+    .dot-animation {
+        opacity: 0;
+        animation: dotPulse 1.5s infinite;
+    }
+    
+    .dot-animation:nth-child(2) {
+        animation-delay: 0.5s;
+    }
+    
+    .dot-animation:nth-child(3) {
+        animation-delay: 1s;
+    }
+    
+    @keyframes dotPulse {
+        0% { opacity: 0; }
+        50% { opacity: 1; }
+        100% { opacity: 0; }
+    }
+    
+    /* Make text area auto-expand */
+    textarea {
+        max-height: 120px;
+        min-height: 50px;
+    }
+</style>
+
+<script>
+    let currentSessionId = "{{ active_session.id|default:'null' }}";
+    
+    // Auto-resize textarea
+    const textarea = document.getElementById('question');
+    textarea.addEventListener('input', function() {
+        this.style.height = 'auto';
+        this.style.height = (this.scrollHeight) + 'px';
+    });
+    
+    function toggleSidebar() {
+        const sidebar = document.getElementById('sidebar');
+        const overlay = document.getElementById('sidebarOverlay');
         
-        
-        function handleEnter(event) {
-            if (event.key === "Enter" && !event.shiftKey) { 
-                event.preventDefault();  // Prevents newline in textarea
-                sendQuestion(); 
-            }
+        if (sidebar.classList.contains('w-0') || sidebar.classList.contains('md:w-72')) {
+            sidebar.classList.remove('w-0', 'md:w-72');
+            sidebar.classList.add('w-72');
+            overlay.classList.remove('hidden');
+        } else {
+            sidebar.classList.remove('w-72');
+            sidebar.classList.add('w-0', 'md:w-72');
+            overlay.classList.add('hidden');
         }
+    }
     
-        function sendQuestion() {
-            const questionInput = document.getElementById('question');
-            const answerBox = document.getElementById('answer');
-            const question = questionInput.value.trim();
+    document.getElementById('toggleSidebar').addEventListener('click', toggleSidebar);
     
-            if (!question) {
-                return;
-            }
-    
-            // Append user's question (Right aligned)
-            answerBox.innerHTML += `
-                <div class="flex justify-end mb-4">
-                    <div class="bg-orange-500 text-white px-5 py-3 rounded-lg max-w-md shadow-md">
-                        <p class="font-semibold mb-1">You</p>
-                        <p>${question}</p>
-                    </div>
-                </div>
-            `;
-    
-            // Clear input field immediately after submission
-            questionInput.value = "";
-            
-            // Scroll to bottom
-            answerBox.scrollTop = answerBox.scrollHeight;
-    
-            // Show typing indicator
-            answerBox.innerHTML += `
-                <div id="typing-indicator" class="flex justify-start mb-4">
-                    <div class="bg-orange-300 px-5 py-3 rounded-lg shadow-md">
-                        <p class="font-semibold mb-1">AI Assistant</p>
-                        <p>Typing<span class="dot-typing">...</span></p>
-                    </div>
-                </div>
-            `;
-            
-            // Scroll to typing indicator
-            answerBox.scrollTop = answerBox.scrollHeight;
-    
-            fetch("{% url 'ai-home' %}", {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json",
-                    "X-CSRFToken": "{{ csrf_token }}"
-                },
-                body: JSON.stringify({ 
-                    question: question,
-                    chat_id: currentChatId
-                })
-            })
-            .then(response => response.json())
-            .then(data => {
-                // Remove typing indicator
-                const typingIndicator = document.getElementById('typing-indicator');
-                if (typingIndicator) {
-                    typingIndicator.remove();
-                }
-                
-                // Save the chat ID for future messages
-                if (!currentChatId && data.chat_id) {
-                    currentChatId = data.chat_id;
-                }
-                
-                // Format the response with Markdown
-                const formattedAnswer = marked.parse(data.answer || "No answer received from AI.");
-                
-                // Append AI's response (Left aligned)
-                answerBox.innerHTML += `
-                    <div class="flex justify-start mb-4">
-                        <div class="bg-orange-400 text-white px-5 py-3 rounded-lg max-w-2xl shadow-md">
-                            <p class="font-semibold mb-2">AI Assistant</p>
-                            <div class="chat-content">${formattedAnswer}</div>
-                        </div>
-                    </div>
-                `;
-                
-                // Scroll to bottom again after receiving response
-                answerBox.scrollTop = answerBox.scrollHeight;
-                
-                // If this is a new chat, reload to update sidebar
-                if (!window.location.href.includes('/chat/')) {
-                    window.location.href = "/chat/" + data.chat_id + "/";
-                }
-            })
-            .catch(error => {
-                console.error("Error:", error);
-                
-                // Remove typing indicator
-                const typingIndicator = document.getElementById('typing-indicator');
-                if (typingIndicator) {
-                    typingIndicator.remove();
-                }
-                
-                answerBox.innerHTML += `
-                    <div class="flex justify-start mb-4">
-                        <div class="bg-red-500 text-white px-5 py-3 rounded-lg max-w-md shadow-md">
-                            <p class="font-semibold mb-1">Error</p>
-                            <p>There was an error processing your request.</p>
-                        </div>
-                    </div>
-                `;
-                // Scroll to bottom
-                answerBox.scrollTop = answerBox.scrollHeight;
-            });
-        }
+    function startNewChat() {
+        currentSessionId = null;
+        document.getElementById('answer').innerHTML = '';
+        window.history.pushState({}, '', "{% url 'ai-home' %}");
         
-        // Apply Markdown formatting to existing messages
-        document.addEventListener('DOMContentLoaded', function() {
-            const chatContents = document.querySelectorAll('.chat-content');
-            chatContents.forEach(element => {
-                const originalText = element.innerHTML;
-                element.innerHTML = marked.parse(originalText);
-            });
+        // On mobile, close the sidebar after selecting new chat
+        if (window.innerWidth < 768) {
+            toggleSidebar();
+        }
+    }
+    
+    function handleEnter(event) {
+        if (event.key === "Enter" && !event.shiftKey) { 
+            event.preventDefault();  // Prevents newline in textarea
+            sendQuestion(); 
+        }
+    }
+
+    function formatAIResponse(text) {
+        if (!text) return "No answer received from AI.";
+        
+        // Replace URLs with clickable links
+        text = text.replace(/(https?:\/\/[^\s]+)/g, '<a href="$1" target="_blank" class="text-blue-200 underline">$1</a>');
+        
+        // Handle code blocks with ```
+        text = text.replace(/```(\w*)([\s\S]*?)```/g, function(match, language, code) {
+            return `<pre><code class="language-${language}">${code.trim()}</code></pre>`;
         });
-    </script>
-    
-    <!-- Add enhanced styles -->
-    <style>
-        /* Chat content formatting */
-        .chat-content h1, 
-        .chat-content h2, 
-        .chat-content h3 {
-            margin-top: 1em;
-            margin-bottom: 0.5em;
-            font-weight: bold;
-        }
         
-        .chat-content h1 {
-            font-size: 1.5em;
-            border-bottom: 1px solid rgba(255, 255, 255, 0.3);
-            padding-bottom: 0.2em;
-        }
+        // Handle inline code with `
+        text = text.replace(/`([^`]+)`/g, '<code>$1</code>');
         
-        .chat-content h2 {
-            font-size: 1.3em;
-        }
+        // Convert line breaks to paragraphs, but preserve existing HTML
+        const paragraphs = text.split(/\n\n+/);
+        const formatted = paragraphs.map(p => {
+            // Skip if paragraph starts with HTML tag
+            if (p.trim().startsWith('<')) return p;
+            
+            // Replace single newlines with <br>
+            const withLineBreaks = p.replace(/\n/g, '<br>');
+            return `<p>${withLineBreaks}</p>`;
+        }).join('');
         
-        .chat-content h3 {
-            font-size: 1.1em;
+        return formatted;
+    }
+
+    function sendQuestion() {
+        const questionInput = document.getElementById('question');
+        const answerBox = document.getElementById('answer');
+        const thinkingIndicator = document.getElementById('thinkingIndicator');
+        const question = questionInput.value.trim();
+
+        if (!question) {
+            answerBox.innerHTML += `<p class="text-red-600 text-center mb-3">Please enter a question.</p>`;
+            return;
         }
+
+        // Append user's question (Right aligned)
+        answerBox.innerHTML += `
+            <div class="flex justify-end mb-3">
+                <div class="bg-orange-500 text-black px-4 py-2 rounded-lg max-w-xs md:max-w-md lg:max-w-lg text-right shadow-md">
+                    ${question}
+                </div>
+            </div>
+        `;
+
+        // Clear input field immediately after submission
+        questionInput.value = "";
+        questionInput.style.height = 'auto';
         
-        .chat-content ul, 
-        .chat-content ol {
-            margin-left: 1.5em;
-            margin-bottom: 1em;
-            padding-left: 0.5em;
+        // Show thinking indicator
+        thinkingIndicator.classList.remove('hidden');
+        answerBox.appendChild(thinkingIndicator);
+        
+        // Scroll to the bottom
+        answerBox.scrollTop = answerBox.scrollHeight;
+
+        // Prepare data payload
+        const data = { 
+            question: question 
+        };
+        
+        // Include session ID if we're in an existing session
+        if (currentSessionId && currentSessionId !== "null") {
+            data.session_id = currentSessionId;
+        } else {
+            data.new_session_title = question.length > 50 ? question.substring(0, 50) + "..." : question;
         }
-        
-        .chat-content ul {
-            list-style-type: disc;
-        }
-        
-        .chat-content ol {
-            list-style-type: decimal;
-        }
-        
-        .chat-content li {
-            margin-bottom: 0.5em;
-        }
-        
-        .chat-content p {
-            margin-bottom: 0.8em;
-        }
-        
-        .chat-content strong {
-            font-weight: bold;
-            color: #FFECB3; /* Light gold for emphasis */
-        }
-        
-        .chat-content pre {
-            background-color: rgba(0, 0, 0, 0.2);
-            padding: 0.8em;
-            border-radius: 0.4em;
-            overflow-x: auto;
-            margin: 0.8em 0;
-            border-left: 3px solid #FFD700;
-        }
-        
-        .chat-content code {
-            font-family: monospace;
-            background-color: rgba(0, 0, 0, 0.15);
-            padding: 0.1em 0.3em;
-            border-radius: 0.2em;
-        }
-        
-        .chat-content blockquote {
-            border-left: 3px solid rgba(255, 255, 255, 0.5);
-            padding-left: 1em;
-            margin: 1em 0 1em 0.5em;
-            font-style: italic;
-        }
-        
-        .chat-content table {
-            border-collapse: collapse;
-            width: 100%;
-            margin: 1em 0;
-        }
-        
-        .chat-content th,
-        .chat-content td {
-            border: 1px solid rgba(255, 255, 255, 0.3);
-            padding: 0.5em;
-            text-align: left;
-        }
-        
-        .chat-content th {
-            background-color: rgba(0, 0, 0, 0.2);
-            font-weight: bold;
-        }
-        
-        /* Typing indicator animation */
-        .dot-typing {
-            position: relative;
-            animation: dotTyping 1.5s infinite linear;
-        }
-        
-        @keyframes dotTyping {
-            0% { content: "."; }
-            33% { content: ".."; }
-            66% { content: "..."; }
-        }
-        
-        /* Custom scrollbar */
-        #answer::-webkit-scrollbar {
-            width: 8px;
-        }
-        
-        #answer::-webkit-scrollbar-track {
-            background: rgba(237, 137, 54, 0.1);
-        }
-        
-        #answer::-webkit-scrollbar-thumb {
-            background-color: rgba(237, 137, 54, 0.5);
-            border-radius: 20px;
-        }
-        
-        /* Improve chat message width */
-        @media (min-width: 768px) {
-            .max-w-2xl {
-                max-width: 42rem;
+
+        fetch("{% url 'ai-home' %}", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                "X-CSRFToken": "{{ csrf_token }}"
+            },
+            body: JSON.stringify(data)
+        })
+        .then(response => response.json())
+        .then(data => {
+            // Hide thinking indicator
+            thinkingIndicator.classList.add('hidden');
+            
+            // Save the session ID for subsequent messages
+            if (data.session_id) {
+                currentSessionId = data.session_id;
+                
+                // Update URL without reloading the page
+                const newUrl = `{% url 'ai-home' %}?session=${data.session_id}`;
+                window.history.pushState({}, '', newUrl);
+                
+                // If this is a new session, and we're on mobile, refresh to show in sidebar
+                if (!document.referrer.includes(`session=${data.session_id}`)) {
+                    setTimeout(() => {
+                        window.location.href = newUrl;
+                    }, 1000);
+                }
             }
+            
+            // Format the AI response
+            const formattedAnswer = formatAIResponse(data.answer);
+            
+            // Append AI's response (Left aligned)
+            answerBox.innerHTML += `
+                <div class="flex justify-start mb-3">
+                    <div class="bg-orange-500 text-white px-4 py-2 rounded-lg max-w-xs md:max-w-md lg:max-w-lg text-left shadow-md ai-message">
+                        <div class="ai-message-content whitespace-pre-wrap">${formattedAnswer}</div>
+                    </div>
+                </div>
+            `;
+            
+            // Scroll to the bottom
+            answerBox.scrollTop = answerBox.scrollHeight;
+        })
+        .catch(error => {
+            // Hide thinking indicator
+            thinkingIndicator.classList.add('hidden');
+            
+            console.error("Error:", error);
+            answerBox.innerHTML += `
+                <div class="flex justify-start mb-3">
+                    <div class="bg-red-500 text-white px-4 py-2 rounded-lg max-w-xs md:max-w-md text-left shadow-md">
+                        There was an error processing your request.
+                    </div>
+                </div>
+            `;
+            
+            // Scroll to the bottom
+            answerBox.scrollTop = answerBox.scrollHeight;
+        });
+    }
+    
+    // Check if mobile sidebar should be open
+    function checkSidebarState() {
+        const sidebar = document.getElementById('sidebar');
+        const overlay = document.getElementById('sidebarOverlay');
+        
+        if (window.innerWidth >= 768) {
+            sidebar.classList.add('md:w-72');
+            overlay.classList.add('hidden');
+        } else {
+            sidebar.classList.add('w-0');
+            sidebar.classList.remove('w-72');
+            overlay.classList.add('hidden');
         }
-    </style>
-{% endblock %}
+    }
+    
+    // Adjust textarea height on load
+    function adjustTextareaHeight() {
+        const textarea = document.getElementById('question');
+        textarea.style.height = 'auto';
+        textarea.style.height = (textarea.scrollHeight) + 'px';
+    }
+    
+    // Initial setup on page load
+    document.addEventListener("DOMContentLoaded", function() {
+        const answerBox = document.getElementById('answer');
+        answerBox.scrollTop = answerBox.scrollHeight;
+        checkSidebarState();
+        adjustTextareaHeight();
+        
+        // Add resize listener for responsive adjustments
+        window.addEventListener('resize', checkSidebarState);
+    });
+</script>
+
+<style>
+    /* Paper texture background */
+    body {
+      background-color: #FFF7ED;
+      background-image: url("data:image/svg+xml,%3Csvg width='100' height='100' viewBox='0 0 100 100' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M11 18c3.866 0 7-3.134 7-7s-3.134-7-7-7-7 3.134-7 7 3.134 7 7 7zm48 25c3.866 0 7-3.134 7-7s-3.134-7-7-7-7 3.134-7 7 3.134 7 7 7zm-43-7c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zm63 31c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zM34 90c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zm56-76c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zM12 86c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm28-65c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm23-11c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zm-6 60c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm29 22c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zM32 63c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zm57-13c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zm-9-21c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2zM60 91c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2zM35 41c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2zM12 60c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2z' fill='%23FDBA74' fill-opacity='0.1' fill-rule='evenodd'/%3E%3C/svg%3E");
+    }
+  
+    /* Note content styling */
+    .note-content-display {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      color: #4B5563;
+      line-height: 1.6;
+    }
+    
+    .note-content-display h1,
+    .note-content-display h2,
+    .note-content-display h3 {
+      color: #EA580C;
+      margin-top: 1rem;
+      margin-bottom: 0.5rem;
+    }
+    
+    .note-content-display p {
+      margin-bottom: 1rem;
+    }
+    
+    .note-content-display ul,
+    .note-content-display ol {
+      margin-left: 1.5rem;
+      margin-bottom: 1rem;
+    }
+    
+    .note-content-display a {
+      color: #EA580C;
+      text-decoration: underline;
+    }
+    
+    .note-content-display blockquote {
+      border-left: 3px solid #FDBA74;
+      padding-left: 1rem;
+      color: #71717A;
+      font-style: italic;
+      margin: 1rem 0;
+    }
+    
+    .note-content-display img {
+      max-width: 100%;
+      border-radius: 0.375rem;
+      margin: 1rem 0;
+    }
+  </style>
+{% endblock content %}
+
+
+
+<a class="text-xl font-semibold" href="#">
+    <!-- Logo SVG -->
+    <svg width="45" height="45" viewBox="0 0 500 500" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <rect x="0.5" y="0.5" width="499" height="499" rx="89.5" fill="black" stroke="black"/>
+        <path d="M227.949 74.255C238.732 61.5497 258.337 61.5498 269.12 74.255L301.97 112.96C306.89 118.758 314.027 122.212 321.626 122.473L372.246 124.217C388.803 124.787 400.947 139.997 397.836 156.27L388.177 206.807C386.764 214.199 388.5 221.846 392.968 227.903L423.47 269.257C433.273 282.547 428.955 301.444 414.353 309.158L369.232 332.994C362.547 336.525 357.649 342.698 355.729 350.011L342.732 399.509C338.508 415.598 320.88 424.077 305.674 417.335L259.479 396.852C252.51 393.763 244.56 393.763 237.591 396.852L191.396 417.335C176.189 424.077 158.561 415.598 154.337 399.509L141.341 350.011C139.421 342.698 134.523 336.525 127.838 332.994L82.7165 309.158C68.115 301.444 63.7971 282.547 73.5993 269.257L104.102 227.903C108.569 221.846 110.306 214.199 108.893 206.807L99.2332 156.27C96.1229 139.997 108.266 124.787 124.824 124.217L175.444 122.473C183.043 122.212 190.179 118.758 195.1 112.96L227.949 74.255Z" fill="#F5F5F5"/>
+      </svg>
+</a>

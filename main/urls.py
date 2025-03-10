@@ -32,7 +32,6 @@ urlpatterns = [
     path('note/', include('note.urls')),
     path('learn/', include('learn.urls')),
     path('ai/', include('ai.urls')),
-    path('compile/', include('compile.urls')),
     path('user/', include('users.urls')),
     path('register/', user_views.register, name='register'), # <register> <URL pattern> <user_views.register> <view function> <name='register'> <name for the URL pattern> | <name> is used to refer to the URL pattern in the templates.
     # path('login/', auth_views.LoginView.as_view(), name='login'), TemplateDoesNotExist at /login/ this error will show where it trying to find the template. Exception Value: registration/login.html that whee django look for by default. to fix this 

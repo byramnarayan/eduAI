@@ -1,6 +1,6 @@
 
 ## Project Demo:
-![project video](https://youtu.be/Yti7aN_XRtk)
+[![Watch the video](https://img.youtube.com/vi/Yti7aN_XRtk/0.jpg)](https://youtu.be/Yti7aN_XRtk)
 
 # Project Setup Guide
 This guide explains how to create a virtual environment, install dependencies, and run the Django project.

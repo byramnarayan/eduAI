@@ -1,64 +1,98 @@
 {% extends "base/base.html" %}
 {% block content %}
     <body>
-        <div class="font-std mb-10 w-full rounded-2xl bg-white border p-10 font-normal leading-relaxed text-gray-900 border border-gray-800">
-
+        <div class="font-std w-full rounded-2xl  mb-4 p-6 md:p-8 font-normal leading-relaxed text-gray-900 border-2 border-orange-300 shadow-md">
             <div class="flex flex-col md:flex-row">
+                <!-- Profile Image Section -->
                 <div class="md:w-1/3 text-center mb-8 md:mb-0">
-                    <img src="{{ user.profile.image.url }}" alt="Profile Picture" class="rounded-full w-48 h-48 mx-auto mb-4 border-4 border-orange-300 transition-transform duration-300 hover:scale-105 ring ring-gray-300">
+                    <div class="relative mx-auto w-48 h-48">
+                        <img src="{{ user.profile.image.url }}" alt="Profile Picture" class="rounded-full w-48 h-48 object-cover border-4 border-orange-400 shadow-lg transition-all duration-300 hover:scale-105 hover:border-orange-500">
+                        <div class="absolute -bottom-2 -right-2 bg-orange-100 rounded-full p-1 border-2 border-orange-400">
+                            
+                        </div>
+                    </div>
                     <a href="{% url 'edit-profile' %}">
-                        <button class="mt-4 bg-white-800 text-black px-4 py-2 rounded-lg hover:bg-orange-900 transition-colors duration-300 ring ring-gray-300 hover:ring-orange-300">
+                        <button class="mt-6 bg-orange-500 text-white px-6 py-2 rounded-lg font-medium hover:bg-orange-600 transition-colors duration-300 shadow-md hover:shadow-lg transform hover:-translate-y-1">
                             Edit Profile
                         </button>
                     </a>
                 </div>
-                <div class="md:w-2/3 md:pl-8">
-                    <h1 class="text-2xl font-bold text-orange-800 mb-2">{{ user.username }} - [{{ user.profile.position }}]</h1>
-                    <h2 class="text-xl font-semibold text-orange-800 mb-4">Bio:</h2>
-                    <p class="text-gray-700 mb-6">
-                        {{user.profile.bio}}
-                    </p>
-
-                    <h2 class="text-xl font-semibold text-orange-800 mb-4">Organization Information</h2>
-                    <p class="text-gray-700 mb-6">
-                        {{user.profile.insitute}}
-                    </p>
-                <div >
-                    <h2 class="text-xl font-semibold text-orange-800 mb-4">Contact Information</h2>
-                    <ul class="flex gap-x-4 items-center text-gray-700">
-                        <li class="flex items-center">
-                            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2 text-orange-800" viewBox="0 0 20 20" fill="currentColor">
-                                <path d="M2.003 5.884L10 9.882l7.997-3.998A2 2 0 0016 4H4a2 2 0 00-1.997 1.884z" />
-                                <path d="M18 8.118l-8 4-8-4V14a2 2 0 002 2h12a2 2 0 002-2V8.118z" />
-                            </svg>
-                            {{ user.email }}
-                        </li>
-                        <li class="flex items-center">
-                            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2 text-orange-800" viewBox="0 0 20 20" fill="currentColor">
-                                <path d="M2 3a1 1 0 011-1h2.153a1 1 0 01.986.836l.74 4.435a1 1 0 01-.54 1.06l-1.548.773a11.037 11.037 0 006.105 6.105l.774-1.548a1 1 0 011.059-.54l4.435.74a1 1 0 01.836.986V17a1 1 0 01-1 1h-2C7.82 18 2 12.18 2 5V3z" />
-                            </svg>
-                            {{ user.profile.phone }}
-                        </li>
-                        <li class="flex items-center">
-                            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2 text-orange-800" viewBox="0 0 20 20" fill="currentColor">
-                                <path fill-rule="evenodd" d="M5.05 4.05a7 7 0 119.9 9.9L10 18.9l-4.95-4.95a7 7 0 010-9.9zM10 11a2 2 0 100-4 2 2 0 000 4z" clip-rule="evenodd" />
-                            </svg>
-                            {{ user.profile.location }}
-                        </li>
-                    </ul>
-                    
                 
+                <!-- Profile Info Section -->
+                <div class="md:w-2/3 md:pl-8">
+                    <div class="bg-white rounded-xl p-6 border border-orange-200 shadow-sm">
+                        <h1 class="text-3xl font-bold text-orange-700 mb-1">{{ user.username }}</h1>
+                        <p class="text-lg text-orange-600 mb-4 font-medium">{{ user.profile.position }}</p>
+                        
+                        <div class="mb-6">
+                            <h2 class="text-xl font-semibold text-orange-600 mb-2 flex items-center">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" viewBox="0 0 20 20" fill="currentColor">
+                                    <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clip-rule="evenodd" />
+                                </svg>
+                                About Me
+                            </h2>
+                            <p class="text-gray-700 pl-7">
+                                {{user.profile.bio}}
+                            </p>
+                        </div>
+                        
+                        <div class="mb-6">
+                            <h2 class="text-xl font-semibold text-orange-600 mb-2 flex items-center">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" viewBox="0 0 20 20" fill="currentColor">
+                                    <path fill-rule="evenodd" d="M4 4a2 2 0 012-2h8a2 2 0 012 2v12a1 1 0 01-1.581.814L10 13.197l-4.419 2.617A1 1 0 014 15V4z" clip-rule="evenodd" />
+                                </svg>
+                                Organization
+                            </h2>
+                            <p class="text-gray-700 pl-7">
+                                {{user.profile.insitute}}
+                            </p>
+                        </div>
+                        
+                        <div class="mb-6">
+                            <h2 class="text-xl font-semibold text-orange-600 mb-2 flex items-center">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" viewBox="0 0 20 20" fill="currentColor">
+                                    <path d="M10.394 2.08a1 1 0 00-.788 0l-7 3a1 1 0 000 1.84L5.25 8.051a.999.999 0 01.356-.257l4-1.714a1 1 0 11.788 1.838L7.667 9.088l1.94.831a1 1 0 00.787 0l7-3a1 1 0 000-1.838l-7-3zM3.31 9.397L5 10.12v4.102a8.969 8.969 0 00-1.05-.174 1 1 0 01-.89-.89 11.115 11.115 0 01.25-3.762zM9.3 16.573A9.026 9.026 0 007 14.935v-3.957l1.818.78a3 3 0 002.364 0l5.508-2.361a11.026 11.026 0 01.25 3.762 1 1 0 01-.89.89 8.968 8.968 0 00-5.35 2.524 1 1 0 01-1.4 0zM6 18a1 1 0 001-1v-2.065a8.935 8.935 0 00-2-.712V17a1 1 0 001 1z" />
+                                </svg>
+                                Hobbies
+                            </h2>
+                            <div class="pl-7 text-gray-700">
+                                {{ user.profile.hobbies }}
+                            </div>
+                        </div>
+                        
+                        <div>
+                            <h2 class="text-xl font-semibold text-orange-600 mb-3 flex items-center">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" viewBox="0 0 20 20" fill="currentColor">
+                                    <path d="M2 3a1 1 0 011-1h2.153a1 1 0 01.986.836l.74 4.435a1 1 0 01-.54 1.06l-1.548.773a11.037 11.037 0 006.105 6.105l.774-1.548a1 1 0 011.059-.54l4.435.74a1 1 0 01.836.986V17a1 1 0 01-1 1h-2C7.82 18 2 12.18 2 5V3z" />
+                                </svg>
+                                Contact
+                            </h2>
+                            <div class="grid grid-cols-1 md:grid-cols-3 gap-4 pl-7">
+                                <div class="bg-orange-100 rounded-lg p-3 flex items-center shadow-sm hover:bg-orange-200 transition-colors duration-300">
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2 text-orange-600" viewBox="0 0 20 20" fill="currentColor">
+                                        <path d="M2.003 5.884L10 9.882l7.997-3.998A2 2 0 0016 4H4a2 2 0 00-1.997 1.884z" />
+                                        <path d="M18 8.118l-8 4-8-4V14a2 2 0 002 2h12a2 2 0 002-2V8.118z" />
+                                    </svg>
+                                    <span class="truncate">{{ user.email }}</span>
+                                </div>
+                                <div class="bg-orange-100 rounded-lg p-3 flex items-center shadow-sm hover:bg-orange-200 transition-colors duration-300">
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2 text-orange-600" viewBox="0 0 20 20" fill="currentColor">
+                                        <path d="M2 3a1 1 0 011-1h2.153a1 1 0 01.986.836l.74 4.435a1 1 0 01-.54 1.06l-1.548.773a11.037 11.037 0 006.105 6.105l.774-1.548a1 1 0 011.059-.54l4.435.74a1 1 0 01.836.986V17a1 1 0 01-1 1h-2C7.82 18 2 12.18 2 5V3z" />
+                                    </svg>
+                                    <span>{{ user.profile.phone }}</span>
+                                </div>
+                                <div class="bg-orange-100 rounded-lg p-3 flex items-center shadow-sm hover:bg-orange-200 transition-colors duration-300">
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2 text-orange-600" viewBox="0 0 20 20" fill="currentColor">
+                                        <path fill-rule="evenodd" d="M5.05 4.05a7 7 0 119.9 9.9L10 18.9l-4.95-4.95a7 7 0 010-9.9zM10 11a2 2 0 100-4 2 2 0 000 4z" clip-rule="evenodd" />
+                                    </svg>
+                                    <span>{{ user.profile.location }}</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
-                <h2 class="text-xl font-semibold text-orange-800 mb-2 mt-3">Hobbies:</h2>
-                        <li class="flex items-center">
-                            {{ user.profile.hobbies }}
-                        </li>
-                    </p>
             </div>
-
         </div>
-        </div>
-
         <div class="font-std mb-10 w-full rounded-2xl bg-white border p-10 font-normal leading-relaxed text-gray-900 border border-gray-800">    
 
             <div class="flex justify-between items-center mb-6">

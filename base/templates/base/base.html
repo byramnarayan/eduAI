@@ -1,159 +1,206 @@
 {% load static %}
 <!DOCTYPE html>
 <html lang="en">
-    <head>
-        <meta charset="utf-8">
-        <meta property="og:image" content="{% static 'blog/image.png' %}">
-        <meta name="viewport" content="width=device-width, initial-scale=1">
-        
-        <!-- Include TailwindCSS from CDN (only once) -->
-        <script src="https://cdn.tailwindcss.com"></script>
-        
-        <script src="https://cdn.tiny.cloud/1/no-api-key/tinymce/5/tinymce.min.js" referrerpolicy="origin"></script>
+  <head>
+    <meta charset="utf-8" />
+    <meta property="og:image" content="{% static 'blog/image.png' %}" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    
-        {% if title %}
-            <title>Edu AI - {{ title }}</title>
-        {% else %}
-            <title>Edu AI</title>
-        {% endif %}
-    
-        
-    </head>
-    <body>
+    <!-- Include TailwindCSS from CDN (only once) -->
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <script
+      src="https://cdn.tiny.cloud/1/no-api-key/tinymce/5/tinymce.min.js"
+      referrerpolicy="origin"
+    ></script>
+    <link rel="stylesheet" href="{% static 'css/styles.css' %}" />
+    <script defer src="{% static 'js/scripts.js' %}"></script>
+
+    {% if title %}
+    <title>Edu AI - {{ title }}</title>
+    {% else %}
+    <title>Edu AI</title>
+    {% endif %}
+  </head>
+  <body>
     <!-- Changed from fixed to relative positioning so it scrolls with the page -->
     <header class="bg-orange-400 text-white w-full shadow-md">
-        <nav class="container mx-auto flex items-center justify-between p-3">
-            <div class="flex items-center space-x-4">
-                <a class="text-xl font-semibold" href="#">
-                    <!-- Logo SVG -->
-                    <svg width="45" height="45" viewBox="0 0 500 500" fill="none" xmlns="http://www.w3.org/2000/svg">
-                        <rect x="0.5" y="0.5" width="499" height="499" rx="89.5" fill="black" stroke="black"/>
-                        <path d="M227.949 74.255C238.732 61.5497 258.337 61.5498 269.12 74.255L301.97 112.96C306.89 118.758 314.027 122.212 321.626 122.473L372.246 124.217C388.803 124.787 400.947 139.997 397.836 156.27L388.177 206.807C386.764 214.199 388.5 221.846 392.968 227.903L423.47 269.257C433.273 282.547 428.955 301.444 414.353 309.158L369.232 332.994C362.547 336.525 357.649 342.698 355.729 350.011L342.732 399.509C338.508 415.598 320.88 424.077 305.674 417.335L259.479 396.852C252.51 393.763 244.56 393.763 237.591 396.852L191.396 417.335C176.189 424.077 158.561 415.598 154.337 399.509L141.341 350.011C139.421 342.698 134.523 336.525 127.838 332.994L82.7165 309.158C68.115 301.444 63.7971 282.547 73.5993 269.257L104.102 227.903C108.569 221.846 110.306 214.199 108.893 206.807L99.2332 156.27C96.1229 139.997 108.266 124.787 124.824 124.217L175.444 122.473C183.043 122.212 190.179 118.758 195.1 112.96L227.949 74.255Z" fill="#F5F5F5"/>
-                    </svg>
-                </a>
-                <div class="hidden md:flex space-x-4">
-                    <a class="px-3 py-1.5 border border-white rounded hover:bg-white hover:text-gray-900" href="{% url 'base-home' %}">Home</a>
-                    <a class="px-3 py-1.5 border border-white rounded hover:bg-white hover:text-gray-900" href="{%url 'ai-home'%}">Try AI</a>
-                </div>
-            </div>
-    
-            <button id="menu-toggle" class="md:hidden px-3 py-1.5 border border-white rounded hover:bg-white hover:text-gray-900">
-                Menu
-            </button>
-    
-            <!-- Improved mobile menu with better positioning -->
-            <div id="menu" class="hidden md:flex flex-col md:flex-row md:items-center md:space-x-2 absolute md:relative top-16 md:top-auto left-0 w-full md:w-auto bg-orange-400 md:bg-transparent p-4 md:p-0 shadow-md md:shadow-none space-y-2 md:space-y-0 z-50">
-                {% if user.is_authenticated %}
-                <div class="flex flex-col md:flex-row md:items-center w-full md:w-auto space-y-2 md:space-y-0 md:space-x-2">
-                    <a href="{%url 'Community-Home'%}" class="px-3 py-1.5 border border-white rounded hover:bg-white hover:text-gray-900 text-center">Community</a>
-                    
-                    <a href="{% url 'note-create' %}" class="px-3 py-1.5 border border-white rounded hover:bg-white hover:text-gray-900 text-center">
-                        Create Note
-                    </a>
-                    
-                    <a href="{% url 'profile' %}" class="flex items-center px-3 py-1.5 border border-white rounded-full hover:bg-white hover:text-gray-900 text-center">
-                        <img src="{{ user.profile.image.url }}" alt="Profile" class="w-6 h-6 rounded-full mr-2">
-                        Profile
-                      </a>
-                    <form method="POST" action="{% url 'logout' %}" class="w-full md:w-auto text-center md:inline-block">
-                        {% csrf_token %}
-                        <button class="px-3 py-1.5 border border-white rounded hover:bg-white hover:text-gray-900 w-full md:w-auto">Logout</button>
-                    </form>
-                </div>
-                {% else %}
-                <div class="flex flex-col md:flex-row md:items-center w-full md:w-auto space-y-2 md:space-y-0 md:space-x-2">
-                    <a href="{% url 'login' %}" class="px-3 py-1.5 border border-white rounded hover:bg-white hover:text-gray-900 text-center">LogIn</a>
-                    <a href="{% url 'register' %}" class="px-3 py-1.5 border border-white rounded hover:bg-white hover:text-gray-900 text-center">Register</a>
-                </div>
-                {% endif %}
-            </div>
-        </nav>
+      <nav class="container mx-auto flex items-center justify-between p-3">
+        <div class="flex items-center space-x-4">
+          <a class="text-xl font-semibold" href="#">
+            <!-- Logo SVG -->
+            <svg
+              width="45"
+              height="45"
+              viewBox="0 0 500 500"
+              fill="none"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <rect
+                x="0.5"
+                y="0.5"
+                width="499"
+                height="499"
+                rx="89.5"
+                fill="black"
+                stroke="black"
+              />
+              <path
+                d="M227.949 74.255C238.732 61.5497 258.337 61.5498 269.12 74.255L301.97 112.96C306.89 118.758 314.027 122.212 321.626 122.473L372.246 124.217C388.803 124.787 400.947 139.997 397.836 156.27L388.177 206.807C386.764 214.199 388.5 221.846 392.968 227.903L423.47 269.257C433.273 282.547 428.955 301.444 414.353 309.158L369.232 332.994C362.547 336.525 357.649 342.698 355.729 350.011L342.732 399.509C338.508 415.598 320.88 424.077 305.674 417.335L259.479 396.852C252.51 393.763 244.56 393.763 237.591 396.852L191.396 417.335C176.189 424.077 158.561 415.598 154.337 399.509L141.341 350.011C139.421 342.698 134.523 336.525 127.838 332.994L82.7165 309.158C68.115 301.444 63.7971 282.547 73.5993 269.257L104.102 227.903C108.569 221.846 110.306 214.199 108.893 206.807L99.2332 156.27C96.1229 139.997 108.266 124.787 124.824 124.217L175.444 122.473C183.043 122.212 190.179 118.758 195.1 112.96L227.949 74.255Z"
+                fill="#F5F5F5"
+              />
+            </svg>
+          </a>
+          <div class="hidden md:flex space-x-4">
+            <a
+              class="px-3 py-1.5 border border-white rounded hover:bg-white hover:text-gray-900"
+              href="{% url 'base-home' %}"
+              >Home</a
+            >
+            <a
+              class="px-3 py-1.5 border border-white rounded hover:bg-white hover:text-gray-900"
+              href="{%url 'ai-home'%}"
+              >Try AI</a
+            >
+          </div>
+        </div>
+
+        <button
+          id="menu-toggle"
+          class="md:hidden px-3 py-1.5 border border-white rounded hover:bg-white hover:text-gray-900"
+        >
+          Menu
+        </button>
+
+        <!-- Improved mobile menu with better positioning -->
+        <div
+          id="menu"
+          class="hidden md:flex flex-col md:flex-row md:items-center md:space-x-2 absolute md:relative top-16 md:top-auto left-0 w-full md:w-auto bg-orange-400 md:bg-transparent p-4 md:p-0 shadow-md md:shadow-none space-y-2 md:space-y-0 z-50"
+        >
+          {% if user.is_authenticated %}
+          <div
+            class="flex flex-col md:flex-row md:items-center w-full md:w-auto space-y-2 md:space-y-0 md:space-x-2"
+          >
+            <a
+              href="{%url 'Community-Home'%}"
+              class="px-3 py-1.5 border border-white rounded hover:bg-white hover:text-gray-900 text-center"
+              >Community</a
+            >
+
+            <a
+              href="{% url 'note-create' %}"
+              class="px-3 py-1.5 border border-white rounded hover:bg-white hover:text-gray-900 text-center"
+            >
+              Create Note
+            </a>
+
+            <a
+              href="{% url 'profile' %}"
+              class="flex items-center px-3 py-1.5 border border-white rounded-full hover:bg-white hover:text-gray-900 text-center"
+            >
+              <img
+                src="{{ user.profile.image.url }}"
+                alt="Profile"
+                class="w-6 h-6 rounded-full mr-2"
+              />
+              Profile
+            </a>
+            <form
+              method="POST"
+              action="{% url 'logout' %}"
+              class="w-full md:w-auto text-center md:inline-block"
+            >
+              {% csrf_token %}
+              <button
+                class="px-3 py-1.5 border border-white rounded hover:bg-white hover:text-gray-900 w-full md:w-auto"
+              >
+                Logout
+              </button>
+            </form>
+          </div>
+          {% else %}
+          <div
+            class="flex flex-col md:flex-row md:items-center w-full md:w-auto space-y-2 md:space-y-0 md:space-x-2"
+          >
+            <a
+              href="{% url 'login' %}"
+              class="px-3 py-1.5 border border-white rounded hover:bg-white hover:text-gray-900 text-center"
+              >LogIn</a
+            >
+            <a
+              href="{% url 'register' %}"
+              class="px-3 py-1.5 border border-white rounded hover:bg-white hover:text-gray-900 text-center"
+              >Register</a
+            >
+          </div>
+          {% endif %}
+        </div>
+      </nav>
     </header>
-    
-    <!-- Improved mobile menu handling -->
-    <script>
-        document.getElementById('menu-toggle').addEventListener('click', function() {
-            const menu = document.getElementById('menu');
-            menu.classList.toggle('hidden');
-            
-            // Close menu when clicking outside
-            document.addEventListener('click', function closeMenu(e) {
-                if (!menu.contains(e.target) && e.target.id !== 'menu-toggle') {
-                    menu.classList.add('hidden');
-                    document.removeEventListener('click', closeMenu);
-                }
-            });
-        });
-    </script>
-    
+
     <!-- Adjusted main content to not need top padding since header is not fixed anymore -->
     <main class="mx-auto p-4">
-        <div class="w-full">
-            {% if messages %}
-                {% for message in messages %}
-                    <div class="px-4 py-2 mb-2 text-sm font-medium rounded-md 
-                                {% if message.tags == 'error' %}bg-red-100 text-red-800{% endif %}
-                                {% if message.tags == 'success' %}bg-green-100 text-green-800{% endif %}
-                                {% if message.tags == 'info' %}bg-blue-100 text-blue-800{% endif %}
-                                {% if message.tags == 'warning' %}bg-yellow-100 text-yellow-800{% endif %}">
-                        {{ message }}
-                    </div>
-                {% endfor %}
-            {% endif %}
-            <form method="post" enctype="multipart/form-data">
-                {% csrf_token %}
-            </form>
-
-            {% block content %}{% endblock %}
+      <div class="w-full">
+        {% if messages %} {% for message in messages %}
+        <div
+          class="px-4 py-2 mb-2 text-sm font-medium rounded-md {% if message.tags == 'error' %}bg-red-100 text-red-800{% endif %} {% if message.tags == 'success' %}bg-green-100 text-green-800{% endif %} {% if message.tags == 'info' %}bg-blue-100 text-blue-800{% endif %} {% if message.tags == 'warning' %}bg-yellow-100 text-yellow-800{% endif %}"
+        >
+          {{ message }}
         </div>
+        {% endfor %} {% endif %}
+        <form method="post" enctype="multipart/form-data">
+          {% csrf_token %}
+        </form>
+
+        {% block content %}{% endblock %}
+      </div>
     </main>
-</body>
-<style>
+  </body>
+  <style>
     /* Paper texture background */
     body {
-      background-color: #FFF7ED;
+      background-color: #fff7ed;
       background-image: url("data:image/svg+xml,%3Csvg width='100' height='100' viewBox='0 0 100 100' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M11 18c3.866 0 7-3.134 7-7s-3.134-7-7-7-7 3.134-7 7 3.134 7 7 7zm48 25c3.866 0 7-3.134 7-7s-3.134-7-7-7-7 3.134-7 7 3.134 7 7 7zm-43-7c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zm63 31c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zM34 90c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zm56-76c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zM12 86c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm28-65c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm23-11c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zm-6 60c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm29 22c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zM32 63c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zm57-13c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zm-9-21c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2zM60 91c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2zM35 41c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2zM12 60c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2z' fill='%23FDBA74' fill-opacity='0.1' fill-rule='evenodd'/%3E%3C/svg%3E");
     }
-  
+
     /* Note content styling */
     .note-content-display {
-      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-      color: #4B5563;
+      font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+      color: #4b5563;
       line-height: 1.6;
     }
-    
+
     .note-content-display h1,
     .note-content-display h2,
     .note-content-display h3 {
-      color: #EA580C;
+      color: #ea580c;
       margin-top: 1rem;
       margin-bottom: 0.5rem;
     }
-    
+
     .note-content-display p {
       margin-bottom: 1rem;
     }
-    
+
     .note-content-display ul,
     .note-content-display ol {
       margin-left: 1.5rem;
       margin-bottom: 1rem;
     }
-    
+
     .note-content-display a {
-      color: #EA580C;
+      color: #ea580c;
       text-decoration: underline;
     }
-    
+
     .note-content-display blockquote {
-      border-left: 3px solid #FDBA74;
+      border-left: 3px solid #fdba74;
       padding-left: 1rem;
-      color: #71717A;
+      color: #71717a;
       font-style: italic;
       margin: 1rem 0;
     }
-    
+
     .note-content-display img {
       max-width: 100%;
       border-radius: 0.375rem;

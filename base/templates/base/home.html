@@ -1,39 +1,52 @@
 {% extends "base/base.html" %}
 {% block content %}
-        <!-- Hero section with improved visuals and call-to-action -->
-        <section class="bg-gradient-to-r from-orange-500 to-orange-400 rounded-lg py-10 mt-7 shadow-xl">
-            <div class="container mx-auto px-4">
-                <div class="flex flex-col md:flex-row items-center justify-between">
-                    <div class="md:w-1/2 mb-8 md:mb-0">
-                        <h1 class="text-white font-bold text-5xl leading-tight mb-6">Unlock Your Learning Potential</h1>
-                        <p class="text-white text-xl mb-8">Join thousands of students mastering new skills through interactive lessons, collaborative community, and powerful learning tools.</p>
-                        <div class="flex gap-4">
-                            <a href="{% url 'learn-home' %}" class="px-6 py-3 bg-white text-orange-500 font-bold rounded-full hover:bg-orange-600 hover:text-white transition duration-300 shadow-md transform hover:scale-105">Start Learning</a>
-                            <a href="#features" class="px-6 py-3 border-2 border-white text-white font-bold rounded-full hover:bg-white hover:text-orange-500 transition duration-300">Explore Features</a>
-                        </div>
-                    </div>
-                    <div class="md:w-1/2 md:pl-8">
-                        <img src="https://images.unsplash.com/photo-1533279443086-d1c19a186416?q=80&w=1632&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D" alt="Learning environment" 
-                            class="w-full rounded-lg shadow-2xl transform hover:scale-102 transition duration-500 hover:rotate-1">
-                    </div>
-                </div>
+     <!-- Hero section with improved visuals and call-to-action -->
+    <section class="relative  rounded-xl  w-full h-screen flex flex-col justify-center items-center overflow-hidden">
+    <!-- Dark overlay -->
+    <div class="absolute inset-0 "></div>
+    
+    <!-- Video background -->
+    <video class="absolute inset-0 w-full h-full object-cover" autoplay loop muted>
+      <source src="https://media.istockphoto.com/id/1402262712/video/background-with-study-supplies-for-studying-education-animation-video.mp4?s=mp4-640x640-is&k=20&c=zeIPlvRpJJjMbcBCShJEMzfMxBCfqtbpmBllcn9QTBU=" type="video/mp4">
+      Your browser does not support the video tag.
+    </video>
+    
+    <!-- Content -->
+    <div class="relative z-20 text-center px-4">
+        <h1 class="text-5xl md:text-5xl font-border-black text-orange-500 mb-8 drop-shadow-lg">
+          Unlock Your Learning Potential
+        </h1>
+        <!-- Text color to white, background color to white, and width adjustment -->
+        <p class="text-orange-900  text-3xl mb-8 max-w-4xl mx-auto">
+          Join students and master new skills through interactive lessons, collaborative community, and powerful learning tools.
+        </p>
+        
+        <div class="flex flex-col sm:flex-row gap-4 justify-center">
+            <div class="flex gap-4">
+                <a href="{% url 'learn-home' %}" class="px-6 py-3 border-2 border-black bg-white text-orange-500 font-bold rounded-full hover:bg-orange-600 hover:text-white transition duration-300 border-orange-300 transform hover:scale-105">Start Learning</a>
+                <a href="#features" class="px-6 py-3 border-2 border-black bg-white text-orange-500 font-bold rounded-full hover:bg-orange-600 hover:text-white transition duration-300 border-orange-300 transform hover:scale-105">Explore Features</a>
             </div>
-        </section>
+        </div>
+      </div>
+      
+      
+      
+  </section>
 
         <!-- Stats section to build credibility -->
-        <section class="py-12 bg-gray-50">
+       <section class="py-12  rounded-xl mt-4 pt-24">
             <div class="container mx-auto px-4">
                 <div class="grid grid-cols-2 md:grid-cols-4 gap-6 text-center">
                     <div class="p-4">
-                        <p class="text-4xl font-bold text-orange-500 mb-2">15K+</p>
+                        <p class="text-4xl font-bold text-orange-500 mb-2">00K+</p>
                         <p class="text-gray-600">Active Learners</p>
                     </div>
                     <div class="p-4">
-                        <p class="text-4xl font-bold text-orange-500 mb-2">200+</p>
+                        <p class="text-4xl font-bold text-orange-500 mb-2">$00+</p>
                         <p class="text-gray-600">Course Topics</p>
                     </div>
                     <div class="p-4">
-                        <p class="text-4xl font-bold text-orange-500 mb-2">98%</p>
+                        <p class="text-4xl font-bold text-orange-500 mb-2">00%</p>
                         <p class="text-gray-600">Satisfaction Rate</p>
                     </div>
                     <div class="p-4">
@@ -42,7 +55,7 @@
                     </div>
                 </div>
             </div>
-        </section>
+        </section> 
 
         <!-- Featured section with improved cards -->
         <section id="features" class="py-20">

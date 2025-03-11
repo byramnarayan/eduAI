@@ -1,8 +1,11 @@
 
 ## Project Demo:
 <a href="https://youtu.be/Yti7aN_XRtk" target="_blank" rel="noopener noreferrer">
-  <img src="https://github.com/byramnarayan/eduAI/blob/main/media/profile_pics/image.png" alt="eduAI Demo" width="700">
+  <img src="https://github.com/byramnarayan/eduAI/blob/main/media/profile_pics/image.png" 
+       alt="eduAI Demo" width="900" 
+       style="border: 5px solid black;">
 </a>
+
 
 
 # Project Setup Guide

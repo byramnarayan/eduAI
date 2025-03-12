@@ -3,7 +3,7 @@ from django.http import HttpResponse
 from .models import Note
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin 
 from django.contrib.auth.decorators import login_required 
-from django.views.generic import ListView,DetailView,CreateView, UpdateView, DeleteView
+from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView
 from .models import Note
 from django.urls import reverse_lazy
 from django.shortcuts import render, redirect
@@ -58,7 +58,6 @@ class NoteDetailView(LoginRequiredMixin, DetailView):
         return Note.objects.filter(user=self.request.user)
     
 
-
 class NoteCreateView(LoginRequiredMixin, CreateView):
     model = Note
     fields = ['title', 'content']  # Note that content will be populated by Summernote
@@ -71,3 +70,13 @@ class NoteCreateView(LoginRequiredMixin, CreateView):
     def get_success_url(self):
         return reverse_lazy('note-home')  # Redirect to note home after saving
 
+
+class NoteDeleteView(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
+    model = Note
+    template_name = 'note/note_confirm_delete.html'
+    success_url = reverse_lazy('note-home')
+    
+    def test_func(self):
+        # Make sure the user can only delete their own notes
+        note = self.get_object()
+        return self.request.user == note.user

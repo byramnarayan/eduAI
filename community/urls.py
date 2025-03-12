@@ -1,7 +1,7 @@
 from django.contrib import admin
 from django.urls import path, include 
 from . import views
-from .views import DoubtsListView,DoubtsDetailView,DoubtsCreateView,DoubtsUpdateView,DoubtDeleteView
+from .views import DoubtsListView,DoubtsDetailView,DoubtsCreateView,DoubtsUpdateView,DoubtDeleteView,CommentCreateView, CommentDeleteView
 
 # At top frist import view for classed based view 
 urlpatterns = [
@@ -13,5 +13,8 @@ urlpatterns = [
     path('doubt/<int:pk>/update/', DoubtsUpdateView.as_view(), name='doubt-update'),
     path('doubt/<int:pk>/delete/', DoubtDeleteView.as_view(), name='doubt-delete'),
     path('doubt/new/', DoubtsCreateView.as_view(), name='doubt-create'),
+    path('doubt/<int:pk>/comment/', CommentCreateView.as_view(), name='add-comment'),
+    path('comment/<int:pk>/delete/', CommentDeleteView.as_view(), name='delete-comment'),
+
 
 ]

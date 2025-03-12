@@ -1,0 +1,28 @@
+{% extends "base/base.html" %}
+
+{% block content %}
+<div class="max-w-xl mx-auto py-8 px-4">
+    <div class="bg-white rounded-lg shadow-md overflow-hidden border-l-4 border-orange-500">
+        <div class="p-6">
+            <h2 class="text-2xl font-bold text-gray-800 mb-4">Delete Note</h2>
+            
+            <div class="bg-orange-50 border-l-4 border-orange-400 p-4 mb-6">
+                <p class="text-orange-700">Are you sure you want to delete the note "{{ object.title }}"?</p>
+                <p class="text-orange-600 text-sm mt-2">This action cannot be undone.</p>
+            </div>
+            
+            <form method="POST">
+                {% csrf_token %}
+                <div class="flex justify-end space-x-3">
+                    <a href="{% url 'note-detail' object.id %}" class="px-4 py-2 border border-gray-300 rounded-md text-gray-700 hover:bg-gray-50 transition-colors">
+                        Cancel
+                    </a>
+                    <button type="submit" class="px-4 py-2 bg-red-600 text-white rounded-md hover:bg-red-700 transition-colors">
+                        Delete
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock content %}

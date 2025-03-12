@@ -6,6 +6,7 @@ from django.contrib.auth.decorators import login_required
 # +++++++++++++
 # Time to create list based views for the user 
 from django.views.generic import ListView,DetailView,CreateView, UpdateView, DeleteView
+from django.urls import reverse
 # Create your views here.
 
 @login_required # <login_required> decorator to protect the profile page.
@@ -70,3 +71,35 @@ class DoubtDeleteView(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
         if self.request.user == post.author:
             return True
         return False
+# Add to your views.py file
+from django.shortcuts import redirect, get_object_or_404
+from .models import Comment
+
+class CommentCreateView(LoginRequiredMixin, CreateView):
+    model = Comment
+    fields = ['content']
+    template_name = 'community/comment_form.html'
+    
+    def form_valid(self, form):
+        form.instance.author = self.request.user
+        form.instance.doubt = get_object_or_404(doubt, pk=self.kwargs.get('pk'))
+        return super().form_valid(form)
+    
+    def get_success_url(self):
+        return reverse('doubt-detail', kwargs={'pk': self.kwargs.get('pk')})
+    
+    # Add this method to provide the doubt object to the template
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['doubt'] = get_object_or_404(doubt, pk=self.kwargs.get('pk'))
+        return context
+class CommentDeleteView(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
+    model = Comment
+    template_name = 'community/comment_confirm_delete.html'
+    
+    def test_func(self):
+        comment = self.get_object()
+        return self.request.user == comment.author
+    
+    def get_success_url(self):
+        return reverse('doubt-detail', kwargs={'pk': self.object.doubt.pk})

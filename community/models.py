@@ -16,6 +16,20 @@ class doubt(models.Model):
         return reverse('doubt-detail', kwargs={'pk': self.pk})
 #  redirect return to specific line and reverse return full url to that route as the String
 
+
+# Add to your models.py file
+class Comment(models.Model):
+    doubt = models.ForeignKey(doubt, on_delete=models.CASCADE, related_name='comments')
+    author = models.ForeignKey(User, on_delete=models.CASCADE)
+    content = models.TextField()
+    date_posted = models.DateTimeField(default=timezone.now)
+    
+    def __str__(self):
+        return f'Comment by {self.author.username} on {self.doubt.title}'
+    
+    class Meta:
+        ordering = ['-date_posted']  # Show newest comments first
+
 # To check if it run in SQL Shell we need to run the following command
 # python manage.py sqlmigrate appname<community> no<0001>
 # This will show the SQL code that will be executed in the database

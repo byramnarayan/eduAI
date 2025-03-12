@@ -1,0 +1,359 @@
+{
+    "doubts": [
+      {
+        "title": "Django ORM Query Optimization",
+        "content": "I'm working on a project with millions of records and my ORM queries are getting slow. What's the best way to optimize Django ORM queries? Should I use select_related() or prefetch_related() and when should I use each?",
+        "user_id": 1
+      },
+      {
+        "title": "Python List Comprehension vs. For Loops",
+        "content": "I've been using for loops in my Python code, but my colleague keeps suggesting list comprehensions instead. When should I use list comprehensions over traditional for loops? Are there performance benefits?",
+        "user_id": 2
+      },
+      {
+        "title": "React vs. Angular for Web Development",
+        "content": "I'm starting a new project and can't decide between React and Angular. What are the pros and cons of each? Which one would be better for a complex dashboard application?",
+        "user_id": 3
+      },
+      {
+        "title": "PostgreSQL vs. MongoDB for Django",
+        "content": "My Django application needs to scale, and I'm not sure whether to stick with PostgreSQL or migrate to MongoDB. What are the tradeoffs? How does Django's ORM work with NoSQL databases?",
+        "user_id": 1
+      },
+      {
+        "title": "Docker Containers vs. Virtual Machines",
+        "content": "I'm trying to understand the difference between Docker containers and traditional VMs. When should I use one over the other? How do they impact my deployment strategy?",
+        "user_id": 4
+      },
+      {
+        "title": "Debugging Memory Leaks in Python",
+        "content": "My Python application keeps crashing after running for a while. I suspect memory leaks but don't know how to track them down. What tools or approaches should I use to identify and fix memory leaks in Python?",
+        "user_id": 2
+      },
+      {
+        "title": "JWT vs. Session Authentication",
+        "content": "I'm implementing authentication for my web app and torn between JWT and traditional session-based auth. What are the security implications of each? Which is better for scaling?",
+        "user_id": 5
+      },
+      {
+        "title": "Git Merge vs. Rebase Workflow",
+        "content": "Our team is debating between merge and rebase workflows in Git. What are the advantages of each approach? How do they affect our version history and collaboration?",
+        "user_id": 3
+      },
+      {
+        "title": "Async/Await in JavaScript",
+        "content": "I'm struggling to understand async/await in JavaScript. How does it differ from Promises? Can someone explain with examples when I should use each pattern?",
+        "user_id": 6
+      },
+      {
+        "title": "Django REST Framework Serializers",
+        "content": "I'm having trouble with DRF serializers for nested relationships. How do I properly set up serializers for models with many-to-many relationships? What's the best practice?",
+        "user_id": 1
+      },
+      {
+        "title": "CSS Grid vs. Flexbox",
+        "content": "When should I use CSS Grid versus Flexbox? Are there specific layout patterns that work better with one or the other?",
+        "user_id": 7
+      },
+      {
+        "title": "Python Virtual Environments",
+        "content": "What's the difference between venv, virtualenv, and conda? Which one should I use for my Django projects?",
+        "user_id": 2
+      },
+      {
+        "title": "CI/CD Pipeline Best Practices",
+        "content": "I'm setting up CI/CD for my team's project. What are some best practices for creating an efficient pipeline? Which tools integrate well with Django?",
+        "user_id": 8
+      },
+      {
+        "title": "Microservices vs. Monolithic Architecture",
+        "content": "Our application is growing, and we're considering breaking it into microservices. What are the tradeoffs compared to our current monolithic approach? How should we handle inter-service communication?",
+        "user_id": 4
+      },
+      {
+        "title": "Python Type Hints",
+        "content": "How useful are Python type hints in real projects? Do they improve code quality enough to justify the extra typing? What tools should I use with them?",
+        "user_id": 9
+      },
+      {
+        "title": "GraphQL vs. REST APIs",
+        "content": "I've been building REST APIs but keep hearing about GraphQL. What are the advantages? Would it work well with my Django backend?",
+        "user_id": 3
+      },
+      {
+        "title": "Unit Testing in Django",
+        "content": "What's the best approach for writing unit tests in Django? Should I use the built-in test framework or something like pytest? How do I mock database calls?",
+        "user_id": 1
+      },
+      {
+        "title": "Kubernetes for Django Deployment",
+        "content": "I'm considering Kubernetes for deploying my Django application. Is it overkill for a medium-sized project? What's the learning curve like?",
+        "user_id": 5
+      },
+      {
+        "title": "JavaScript Frameworks Comparison",
+        "content": "There are so many JavaScript frameworks now: React, Vue, Angular, Svelte. How do I choose which one to learn? Which ones have the best job prospects?",
+        "user_id": 10
+      },
+      {
+        "title": "Implementing SOLID Principles",
+        "content": "I understand SOLID principles conceptually, but struggle to apply them in my code. Can someone show examples of how to implement each principle in Python?",
+        "user_id": 2
+      },
+      {
+        "title": "Database Indexing Strategies",
+        "content": "My database queries are slow. How do I determine which fields to index? Are there any downsides to adding too many indexes?",
+        "user_id": 6
+      },
+      {
+        "title": "Responsive Design Best Practices",
+        "content": "What are the current best practices for responsive web design? Should I use Bootstrap or build custom CSS with media queries?",
+        "user_id": 7
+      },
+      {
+        "title": "Django Signals vs. Middleware",
+        "content": "When should I use Django signals versus middleware? I need to perform actions when models are saved, but I'm not sure which approach is better.",
+        "user_id": 1
+      },
+      {
+        "title": "Docker Compose for Development",
+        "content": "I'm trying to set up a development environment with Docker Compose for my Django project. What's the best way to structure the docker-compose.yml file? How do I handle database migrations?",
+        "user_id": 8
+      },
+      {
+        "title": "State Management in React",
+        "content": "My React components are getting complex with lots of state. Should I use Redux, Context API, or one of the newer options like Recoil? What are the tradeoffs?",
+        "user_id": 3
+      }
+    ],
+    "comments": [
+      {
+        "doubt_id": 1,
+        "user_id": 3,
+        "content": "For select_related(), use it when you're querying objects that have a foreign key relationship and you know you'll need the related object. It's like a SQL JOIN. For prefetch_related(), use it for many-to-many or reverse foreign key relationships. It does a separate query but Django batches them efficiently.",
+        "date_posted": "2025-02-28 14:23:45"
+      },
+      {
+        "doubt_id": 1,
+        "user_id": 5,
+        "content": "Another tip is to use .values() or .values_list() when you don't need the whole model instance. Also look into django-debug-toolbar to identify query bottlenecks.",
+        "date_posted": "2025-02-28 15:12:30"
+      },
+      {
+        "doubt_id": 1,
+        "user_id": 9,
+        "content": "Don't forget about query hints like .only() and .defer() to limit the fields being retrieved. For really complex queries, sometimes raw SQL is more efficient.",
+        "date_posted": "2025-02-28 18:45:22"
+      },
+      {
+        "doubt_id": 2,
+        "user_id": 1,
+        "content": "List comprehensions are generally more readable and slightly faster. I use them for simple transformations. If you need side effects or complex logic, stick with for loops.",
+        "date_posted": "2025-03-01 09:34:12"
+      },
+      {
+        "doubt_id": 2,
+        "user_id": 7,
+        "content": "Also check out generator expressions (with parentheses instead of brackets) for memory efficiency when dealing with large datasets.",
+        "date_posted": "2025-03-01 11:23:45"
+      },
+      {
+        "doubt_id": 3,
+        "user_id": 2,
+        "content": "I've used both extensively. React has a gentler learning curve and more flexibility. Angular is more opinionated but provides more structure out of the box. For a complex dashboard, I'd lean toward Angular if your team is experienced with it.",
+        "date_posted": "2025-03-02 13:10:05"
+      },
+      {
+        "doubt_id": 3,
+        "user_id": 10,
+        "content": "Consider Vue.js as well. It's a nice middle ground between React and Angular with excellent documentation.",
+        "date_posted": "2025-03-02 14:34:21"
+      },
+      {
+        "doubt_id": 4,
+        "user_id": 6,
+        "content": "PostgreSQL is generally a better choice with Django since the ORM is optimized for relational databases. MongoDB requires using a package like djongo and loses some ORM functionality.",
+        "date_posted": "2025-03-03 16:23:11"
+      },
+      {
+        "doubt_id": 4,
+        "user_id": 8,
+        "content": "I would add that PostgreSQL has great JSON support these days, so you can have document-like flexibility while keeping the benefits of a relational database.",
+        "date_posted": "2025-03-03 17:45:30"
+      },
+      {
+        "doubt_id": 5,
+        "user_id": 3,
+        "content": "Containers are more lightweight and start faster, while VMs provide stronger isolation. For microservices, Docker is usually better. For applications requiring different OS environments, VMs might be necessary.",
+        "date_posted": "2025-03-04 10:28:15"
+      },
+      {
+        "doubt_id": 6,
+        "user_id": 1,
+        "content": "Try using the 'tracemalloc' module from the standard library. Also, 'objgraph' and 'memory_profiler' are excellent third-party tools for tracking down memory leaks in Python.",
+        "date_posted": "2025-03-04 15:24:36"
+      },
+      {
+        "doubt_id": 6,
+        "user_id": 5,
+        "content": "Check for circular references that the garbage collector can't clean up. The 'gc' module has tools to help diagnose these issues.",
+        "date_posted": "2025-03-04 16:42:18"
+      },
+      {
+        "doubt_id": 7,
+        "user_id": 2,
+        "content": "JWT is more scalable for microservices since it's stateless, but session-based auth is simpler and more secure in many cases. With JWT, token revocation is challenging.",
+        "date_posted": "2025-03-05 11:21:45"
+      },
+      {
+        "doubt_id": 7,
+        "user_id": 9,
+        "content": "Consider a hybrid approach: short-lived JWTs with a refresh token mechanism stored in a database. This gives you both scalability and the ability to revoke access.",
+        "date_posted": "2025-03-05 13:57:20"
+      },
+      {
+        "doubt_id": 8,
+        "user_id": 4,
+        "content": "Merge preserves complete history but can create a messy commit tree. Rebase gives a cleaner linear history but rewrites commits. For public branches, merge is safer. For feature branches, rebase is often cleaner.",
+        "date_posted": "2025-03-06 09:13:25"
+      },
+      {
+        "doubt_id": 9,
+        "user_id": 5,
+        "content": "Async/await is syntactic sugar over Promises that makes asynchronous code look synchronous. Use it when you have sequential async operations. For parallel operations, Promise.all() might be better.",
+        "date_posted": "2025-03-06 14:37:42"
+      },
+      {
+        "doubt_id": 9,
+        "user_id": 8,
+        "content": "Here's a simple example: `async function getData() { try { const response = await fetch('/api/data'); const data = await response.json(); return data; } catch (error) { console.error(error); } }`",
+        "date_posted": "2025-03-06 16:23:10"
+      },
+      {
+        "doubt_id": 10,
+        "user_id": 2,
+        "content": "For nested relationships, use serializers with explicit depth control. For many-to-many, use SerializerMethodField or custom to_representation methods to control the output format.",
+        "date_posted": "2025-03-07 10:45:20"
+      },
+      {
+        "doubt_id": 11,
+        "user_id": 3,
+        "content": "Use Grid for two-dimensional layouts (rows and columns together), Flexbox for one-dimensional layouts (row or column). Grid is better for page layouts, Flexbox for component alignment.",
+        "date_posted": "2025-03-07 13:26:54"
+      },
+      {
+        "doubt_id": 12,
+        "user_id": 1,
+        "content": "For Django, I prefer virtualenv or venv (built into Python 3). They're lightweight and focused on Python packages. Conda is better for projects with non-Python dependencies or data science work.",
+        "date_posted": "2025-03-08 09:12:37"
+      },
+      {
+        "doubt_id": 12,
+        "user_id": 10,
+        "content": "I've switched to using Poetry for dependency management. It handles virtual environments and has better dependency resolution than pip.",
+        "date_posted": "2025-03-08 10:45:23"
+      },
+      {
+        "doubt_id": 13,
+        "user_id": 6,
+        "content": "For Django, GitHub Actions or GitLab CI work great. Key practices: run tests in parallel, cache dependencies, use linting, and have separate stages for testing and deployment.",
+        "date_posted": "2025-03-09 11:37:42"
+      },
+      {
+        "doubt_id": 14,
+        "user_id": 9,
+        "content": "Microservices increase operational complexity but improve team autonomy and scaling. For inter-service communication, consider both synchronous (REST/gRPC) and asynchronous (message queues) approaches.",
+        "date_posted": "2025-03-09 15:29:36"
+      },
+      {
+        "doubt_id": 15,
+        "user_id": 1,
+        "content": "Type hints significantly improve code quality, especially in larger codebases. Use mypy for static type checking. They're most valuable in public APIs and complex functions.",
+        "date_posted": "2025-03-10 12:14:32"
+      },
+      {
+        "doubt_id": 15,
+        "user_id": 7,
+        "content": "VSCode with the Pylance extension provides excellent real-time type checking and autocompletion with Python type hints.",
+        "date_posted": "2025-03-10 14:53:21"
+      },
+      {
+        "doubt_id": 16,
+        "user_id": 5,
+        "content": "GraphQL works well with Django using Graphene. The main advantage is clients can request exactly the data they need, reducing over-fetching. It's great for complex UIs with varying data needs.",
+        "date_posted": "2025-03-11 10:25:43"
+      },
+      {
+        "doubt_id": 17,
+        "user_id": 4,
+        "content": "Pytest is more powerful than Django's built-in test framework. Use fixtures for test data, parametrize for multiple test cases, and pytest-django for Django-specific helpers.",
+        "date_posted": "2025-03-11 15:43:21"
+      },
+      {
+        "doubt_id": 17,
+        "user_id": 8,
+        "content": "For mocking database calls, look into pytest-mock combined with factory-boy for test data. The django-test-plus package also has some nice shortcuts.",
+        "date_posted": "2025-03-11 16:32:10"
+      },
+      {
+        "doubt_id": 18,
+        "user_id": 2,
+        "content": "K8s has a steep learning curve but provides benefits for any app that needs high availability, auto-scaling, or complex deployment patterns. For medium projects, managed K8s services like GKE or EKS reduce complexity.",
+        "date_posted": "2025-03-12 09:14:36"
+      },
+      {
+        "doubt_id": 19,
+        "user_id": 3,
+        "content": "For beginners, I recommend React or Vue. React has more jobs, but Vue is easier to learn. Svelte is promising but has a smaller job market. Angular is better if you're from an enterprise background.",
+        "date_posted": "2025-03-12 13:24:51"
+      },
+      {
+        "doubt_id": 20,
+        "user_id": 1,
+        "content": "For the Single Responsibility Principle in Python, consider using composition over inheritance. Break large classes into smaller ones with focused responsibilities.",
+        "date_posted": "2025-03-13 10:35:26"
+      },
+      {
+        "doubt_id": 20,
+        "user_id": 6,
+        "content": "For the Open/Closed Principle, use abstract base classes and dependency injection to make your code extensible without modification.",
+        "date_posted": "2025-03-13 11:23:45"
+      },
+      {
+        "doubt_id": 21,
+        "user_id": 9,
+        "content": "Start by profiling your queries to see which ones are slow. Index columns used in WHERE, JOIN, and ORDER BY clauses. Composite indexes help for multi-column conditions. Downsides include slower writes and more storage.",
+        "date_posted": "2025-03-14 14:26:37"
+      },
+      {
+        "doubt_id": 22,
+        "user_id": 5,
+        "content": "Bootstrap is faster to implement but creates more generic designs. Custom CSS with media queries gives more control. Consider CSS Grid for layout and utility-first CSS like Tailwind for components.",
+        "date_posted": "2025-03-14 16:32:18"
+      },
+      {
+        "doubt_id": 23,
+        "user_id": 7,
+        "content": "Signals are better for decoupled event handling across apps. Middleware is better for request/response processing. For model-save actions, signals make more sense unless you need to modify the response.",
+        "date_posted": "2025-03-15 11:14:53"
+      },
+      {
+        "doubt_id": 24,
+        "user_id": 3,
+        "content": "For Django with Docker Compose, use volumes for the code directory and add a separate database service. Use entrypoint scripts to handle migrations automatically. Consider adding Redis and Celery services.",
+        "date_posted": "2025-03-15 14:36:27"
+      },
+      {
+        "doubt_id": 25,
+        "user_id": 10,
+        "content": "Context API is simpler for smaller apps or when state is confined to a subtree. Redux is better for complex global state with many interactions. Recoil has a nice middle ground with an atom-based approach.",
+        "date_posted": "2025-03-16 09:23:14"
+      },
+      {
+        "doubt_id": 25,
+        "user_id": 6,
+        "content": "Also consider Zustand, which has a simpler API than Redux but handles complex state well. React Query is great for server state specifically.",
+        "date_posted": "2025-03-16 10:45:21"
+      }
+    ]
+  }

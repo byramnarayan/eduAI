@@ -74,26 +74,77 @@
         
         <!-- Answer Section Header -->
         <div class="flex items-center justify-between mb-4">
-            <h2 class="text-xl font-bold text-orange-800">Answers</h2>
+            <h2 class="text-xl font-bold text-orange-800">Answers ({{ object.comments.all|length }})</h2>
             <button class="text-sm bg-orange-100 hover:bg-orange-200 text-orange-800 font-medium py-1 px-3 rounded-full transition-colors">
                 Most Helpful
             </button>
         </div>
         
-        <!-- If you have answers, they would go here -->
-        <div class="bg-white rounded-lg shadow-sm p-6 mb-6 border border-orange-200">
-            <div class="text-center py-8">
-                <svg xmlns="http://www.w3.org/2000/svg" class="h-12 w-12 mx-auto text-orange-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 8h10M7 12h4m1 8l-4-4H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-3l-4 4z" />
-                </svg>
-                <h3 class="mt-4 text-lg font-medium text-orange-800">No answers yet</h3>
-                <p class="mt-2 text-orange-600">Be the first to answer this question!</p>
-                
-                <!-- Add Answer Button -->
-                <button class="mt-4 bg-orange-600 hover:bg-orange-700 text-white font-medium py-2 px-6 rounded-md transition-colors shadow-sm">
-                    Add Your Answer
-                </button>
+        <!-- Comment/Answer Section -->
+        {% if object.comments.all %}
+            <!-- List of Comments -->
+            {% for comment in object.comments.all %}
+                <div class="bg-white rounded-lg shadow-sm p-6 mb-4 border border-orange-200">
+                    <div class="flex items-start gap-4">
+                        <!-- Profile Picture -->
+                        <div class="shrink-0">
+                            <img class="rounded-full w-10 h-10 border-2 border-orange-200 object-cover" 
+                                src="{{ comment.author.profile.image.url }}" 
+                                alt="{{ comment.author }}'s Profile Picture">
+                        </div>
+                        
+                        <div class="flex-1">
+                            <!-- Comment Author and Date -->
+                            <div class="flex flex-wrap items-center justify-between mb-2">
+                                <div>
+                                    <a href="#" class="font-medium text-orange-900 hover:text-orange-700 transition">
+                                        {{ comment.author }}
+                                    </a>
+                                    <div class="text-orange-600 text-xs mt-1">
+                                        Answered on {{ comment.date_posted | date:"F d, Y at g:i A"}}
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <!-- Comment Content -->
+                            <div class="prose prose-orange text-gray-700 max-w-none">
+                                {{ comment.content }}
+                            </div>
+                            
+                            <!-- Delete Comment (Only for Author) -->
+                            {% if comment.author == user %}
+                                <div class="flex justify-end mt-3 pt-2 border-t border-orange-100">
+                                    <a href="{% url 'delete-comment' comment.id %}" 
+                                    class="flex items-center px-3 py-1 bg-red-100 text-red-700 text-xs font-medium rounded-md hover:bg-red-200 transition-all">
+                                        <svg xmlns="http://www.w3.org/2000/svg" class="h-3 w-3 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                                        </svg>
+                                        Delete
+                                    </a>
+                                </div>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+            {% endfor %}
+        {% else %}
+            <!-- No Comments Yet Message -->
+            <div class="bg-white rounded-lg shadow-sm p-6 mb-6 border border-orange-200">
+                <div class="text-center py-8">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-12 w-12 mx-auto text-orange-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 8h10M7 12h4m1 8l-4-4H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-3l-4 4z" />
+                    </svg>
+                    <h3 class="mt-4 text-lg font-medium text-orange-800">No answers yet</h3>
+                    <p class="mt-2 text-orange-600">Be the first to answer this question!</p>
+                </div>
             </div>
+        {% endif %}
+        
+        <!-- Add Answer Button -->
+        <div class="text-center mb-8">
+            <a href="{% url 'add-comment' object.pk %}" class="bg-orange-600 hover:bg-orange-700 text-white font-medium py-2 px-6 rounded-md transition-colors shadow-sm inline-block">
+                Add Your Answer
+            </a>
         </div>
         
         <!-- Back Button -->
